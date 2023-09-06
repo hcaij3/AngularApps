@@ -31,7 +31,7 @@ import {NumbersOnlyModule} from '../number-only/number-only.module';
     // ContactDetailsComponent,
     ContactListComponent
 
-  ],
+  ], 
   exports: [
     NumbersOnlyModule,
     CompanyContactRecordComponent,

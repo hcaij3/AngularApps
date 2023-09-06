@@ -1,0 +1,15 @@
+<p>The reverse of 'hello' is '{{ "hello" | reverse}}'</p>
+
+<p highlight> Highlight Directive </p>
+
+<p>constant: {{lang}}</p>
+=====
+<cmn-user [user]="currentUser"></cmn-user>
+=====
+
+<p>fetching countries: </p>
+<div *ngFor="let country of countries">
+    {{ country.id }}
+</div>
+
+<p>fetching countries$: {{countries$ | async}}</p>

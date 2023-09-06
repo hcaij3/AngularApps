@@ -9,10 +9,13 @@
     "test": "ng test",
     "start demo": "ng run demo:serve --port 3000 -o",
     "start master-file": "ng serve --project=masterFile --port 3001 -o",
+    "start md-co": "ng serve --project=md-co --port 5002 -o",
+    "start common": "ng serve --project=common --port 5003 -o",
     "prod-masterFile-build": "npm run prod-masterFile-build-en & npm run prod-masterFile-build-fr",
     "prod-masterFile-build-en": "ng run masterFile:build:production-en & npm run updateBuild --language=en",
     "prod-masterFile-build-fr": "ng run masterFile:build:production-fr & npm run updateBuild --language=fr",
-    "updateBuild": "node ./projects/master-file/update.build.js"
+    "updateBuild": "node ./projects/master-file/update.build.js",
+    "prod-md-co-build": "ng run md-co:build:production-en"
   },
   "private": true,
   "dependencies": {
@@ -48,6 +51,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
+    "ng-packagr": "^15.0.0",
     "typescript": "~4.8.2"
   }
 }

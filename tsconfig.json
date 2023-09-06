@@ -9,6 +9,17 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
+    "paths": {
+      "lib-shared": [
+        "dist/lib-shared"
+      ],
+      "lib-ui-shared": [
+        "dist/lib-ui-shared"
+      ],
+      "my-lib": [
+        "dist/my-lib"
+      ]
+    },
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
