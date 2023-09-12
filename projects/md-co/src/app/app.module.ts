@@ -10,9 +10,11 @@ import { AppComponent } from './app.component';
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
+// import { SharedModule } from '@hpfb/sdk/shared';
 import { UiModule } from '@hpfb/sdk/ui';
 import { FormModule } from './form.module';
-import { SharedModule } from './shared/shared.module';
+import { DataLoaderService } from '@hpfb/sdk/data-loader';
+
 
 // import {CommonFeatureModule} from '../app/common/common-feature.module';
 // import {DataLoaderModule} from '../app/data-loader/data-loader.module';
@@ -29,7 +31,7 @@ import { SharedModule } from './shared/shared.module';
     // NumbersOnlyModule,
     // ContainerModule,
     UiModule,
-    SharedModule,
+    // SharedModule,
     FormModule,
 
     TranslateModule.forRoot({
@@ -44,11 +46,13 @@ import { SharedModule } from './shared/shared.module';
     // ValidationService,
     // GlobalsService,
     // MasterFileDataLoaderService,
+    DataLoaderService,
     Title,
     // { provide: HTTP_INTERCEPTORS, useClass: NoCacheHeadersInterceptor, multi: true }
   ],
+  // exports: [UiModule, FormModule],
   exports: [UiModule, FormModule],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent], 
 })
 export class AppModule {}
 
