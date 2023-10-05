@@ -7,7 +7,7 @@ import { AMEND, ContactStatus, FINAL, XSLT_PREFIX, ROOT_TAG } from '../app.const
 import { CompanyDataLoaderService } from './company-data-loader.service';
 import { CompanyBaseService } from './company-base.service';
 import { GeneralInformation, Contact, PrimaryContact, AdministrativeChanges, Enrollment} from '../models/Enrollment';
-import { ContactListComponent, ControlMessagesComponent, FileConversionService, INameAddress, LoggerService, NO, UtilsService, YES } from '@hpfb/sdk/ui';
+import { ContactListComponent, ControlMessagesComponent, FileConversionService, INameAddress, LoggerService, MinimalLogger, NO, UtilsService, YES } from '@hpfb/sdk/ui';
 import { NavigationEnd, Router } from '@angular/router';
 import { GlobalService } from '../global/global.service';
 
@@ -23,6 +23,8 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   @Input() lang;
   @Input() helpTextSequences;
   @ViewChild(ContactListComponent, {static: true}) companyContacts: ContactListComponent;
+
+  route: string = "/lingcontacts";
   
   private _genInfoErrors = [];
   private _addressErrors = [];
@@ -72,7 +74,7 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
     private _formDataLoader: CompanyDataLoaderService,
     private _companyService: CompanyBaseService,
     private _fileService: FileConversionService, private _utilService: UtilsService, private router: Router, private _globalService: GlobalService,
-    private _loggerService: LoggerService
+    private _loggerService: MinimalLogger
   ) {
     // _formDataLoader = new CompanyDataLoaderService(this.http);
     // this.countryList = [];
@@ -86,11 +88,11 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   ngOnInit() {  
     try {
       if (!this._globalService.getEnrollment()) {
-        this._loggerService.log("form.base", "onInit", "enrollement doesn't exist");
+        // this._loggerService.logInfo("form.base", "onInit", "enrollement doesn't exist");
         this.enrollModel = this._companyService.getEmptyEnrol();
         this._globalService.setEnrollment(this.enrollModel);
       } else {
-        this._loggerService.log("form.base", "onInit", "get enrollement from globalservice");
+        // this._loggerService.logInfo("form.base", "onInit", "get enrollement from globalservice");
         this.enrollModel = this._globalService.getEnrollment();
       }
 
@@ -106,10 +108,10 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
 
       // to cache the data
       this._formDataLoader.getKeywordList().subscribe((data) => {
-        // this._loggerService.log("form.base", "onInit", JSON.stringify(data));
+        this._loggerService.logInfo(JSON.stringify(data));
         this.keywordList = data;
         this.languageList = data.find(x => (x.name === 'languages')).data;
-        this._loggerService.log("form.base", "onInit", JSON.stringify(this.languageList));
+        // this._loggerService.logInfo("form.base", "onInit", JSON.stringify(this.languageList));
       });
 
       this._formDataLoader.getContactStatuseList().subscribe((data) => {
@@ -117,17 +119,17 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
       });
 
       this._formDataLoader.getCountryList().subscribe((data) => {
-        // this._loggerService.log("form.base", "onInit", JSON.stringify(data));
+        // this._loggerService.logInfo("form.base", "onInit", JSON.stringify(data));
         this.countryList = data;
       });
 
       this._formDataLoader.getProvinceList().subscribe((data) => {
-        // this._loggerService.log("form.base", "onInit", JSON.stringify(data));
+        // this._loggerService.logInfo("form.base", "onInit", JSON.stringify(data));
         this.provinceList = data;
       });
 
       this._formDataLoader.getStateList().subscribe((data) => {
-        // this._loggerService.log("form.base", "onInit", JSON.stringify(data));
+        // this._loggerService.logInfo("form.base", "onInit", JSON.stringify(data));
         this.stateList = data;
       });
 
@@ -150,15 +152,15 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
       // this.stateList = await this._formDataLoader.getStates(
       //   this.translate.currentLang
       // );
-      this._loggerService.log("form.base", "onInit", "isInternal: " + this.isInternal);
+      this._loggerService.logInfo( this.isInternal);
       if (this.isInternal === NO) {
         this.isInternalSite = false;
-        // this._loggerService.log('isInternalSite in ngOnInit: ' + this.isInternalSite);
+        // this._loggerService.logInfo('isInternalSite in ngOnInit: ' + this.isInternalSite);
       } else {
         this.saveXmlLabel = 'approve.final';
       }
     } catch (e) {
-      this._loggerService.error("formbase", e);
+      this._loggerService.logError(e);
       this.gotoErrorPage()
     }
   }
@@ -185,7 +187,7 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   }
 
   processErrors() {
-    // this._loggerService.log('@@@@@@@@@@@@ Processing errors in Company base compo
+    // this._loggerService.logInfo('@@@@@@@@@@@@ Processing errors in Company base compo
     this.errorList = [];
     // concat the error arrays
     this.errorList = this._genInfoErrors.concat(
@@ -320,7 +322,7 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
 
   public processFile(fileData: ConvertResults) {
     this.loadFileIndicator++;
-    // this._loggerService.log('form.base', 'processingFile', JSON.stringify(fileData, null, 2));
+    // this._loggerService.logInfo('form.base', 'processingFile', JSON.stringify(fileData, null, 2));
 
     this.genInfoModel = fileData.data.DEVICE_COMPANY_ENROL.general_information;
     // set amend reasons and admin changes section to null if status is Final
@@ -386,7 +388,7 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   }
 
   public updateChild() {
-    // this._loggerService.log("Calling updateChild")
+    // this._loggerService.logInfo("Calling updateChild")
   }
 
   private _buildfileName() {

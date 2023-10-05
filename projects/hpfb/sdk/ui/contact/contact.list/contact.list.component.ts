@@ -12,6 +12,7 @@ import { ListBaseComponent } from '../../list/list-base.component';
 import {TranslateService} from '@ngx-translate/core';
 import { errorSummClassName } from '../../common.constants';
 import { ICode } from '../../data-loader/data';
+import { RoutingService } from '../../routing/routing.service';
 
 //  import {ExpanderComponent} from '../../common/expander/expander.component';
 @Component({
@@ -32,6 +33,7 @@ export class ContactListComponent extends ListBaseComponent implements OnInit, O
   @Input() public xmlStatus;
   @Input() lang;
   @Input() helpTextSequences;
+  @Input() newContactRoutePath;
   @Output() public errors = new EventEmitter();
   @Output() public contactsUpdated = new EventEmitter();
 
@@ -77,7 +79,7 @@ export class ContactListComponent extends ListBaseComponent implements OnInit, O
     }
   ];
 
-  constructor(private _fb: FormBuilder, private translate: TranslateService) {
+  constructor(private _fb: FormBuilder, private translate: TranslateService, private _routingService: RoutingService) {
     super();
     this.service = new ContactListService();
     this.dataModel = this.service.getModelRecordList();
@@ -232,26 +234,28 @@ export class ContactListComponent extends ListBaseComponent implements OnInit, O
    */
   public addContact(): void {
 
-    // add contact to the list
-    // console.log('adding an contact');
-    // 1. Get the list of reactive form Records
-    let contactFormList = <FormArray>this.contactListForm.controls['contacts'];
-    // console.log(contactFormList);
-    // 2. Get a blank Form Model for the new record
-    let formContact = CompanyContactRecordService.getReactiveModel(this._fb, this.isInternal);
-    // 3. set record id
-    this.service.setRecordId(formContact, this.service.getNextIndex());
-    // 4. Add the form record using the super class. New form is addded at the end
-    this.addRecord(formContact, contactFormList);
-    // console.log(contactFormList);
-    // 5. Set the new form to the new contact form reference.
-    this.newContactForm = <FormGroup> contactFormList.controls[contactFormList.length - 1];
-    if (this.isInternal) {
-      document.location.href = '#contactId';
-    } else {
-      document.location.href = '#status';
-    }
-    this.showErrors = false;
+    // // add contact to the list
+    // // console.log('adding an contact');
+    // // 1. Get the list of reactive form Records
+    // let contactFormList = <FormArray>this.contactListForm.controls['contacts'];
+    // // console.log(contactFormList);
+    // // 2. Get a blank Form Model for the new record
+    // let formContact = CompanyContactRecordService.getReactiveModel(this._fb, this.isInternal);
+    // // 3. set record id
+    // this.service.setRecordId(formContact, this.service.getNextIndex());
+    // // 4. Add the form record using the super class. New form is addded at the end
+    // this.addRecord(formContact, contactFormList);
+    // // console.log(contactFormList);
+    // // 5. Set the new form to the new contact form reference.
+    // this.newContactForm = <FormGroup> contactFormList.controls[contactFormList.length - 1];
+    // if (this.isInternal) {
+    //   document.location.href = '#contactId';
+    // } else {
+    //   document.location.href = '#status';
+    // }
+    // this.showErrors = false;
+
+    this._routingService.navigateTo(this.newContactRoutePath);
   }
 
   /**

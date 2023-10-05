@@ -20,6 +20,7 @@ export * from './contact/contact.details/contact.details.component';
 export * from './contact/company-contact-record/company-contact-record.component';
 export * from './contact/contact.list/contact.list.component';
 export * from './contact/contact.list/contact-list.service';
+export * from './contact/add-edit.contact/add-edit.contact.component';
 
 export * from './file-io/greeter/greeter.component';
 export * from './file-io/convert-results';
@@ -49,3 +50,5 @@ export * from './information/security-disclaimer/security-disclaimer.component'
 export * from './information/instruction/instruction.service'
 
 export * from './logger/logger.service'
+export * from './minimal-logger.service'
+export * from './bridge.service';

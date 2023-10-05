@@ -6,12 +6,17 @@ import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import { AppFormModule } from './app.form.module';
-import { UiModule } from '@hpfb/sdk/ui';
+import { AbstractBridgeService, UiModule } from '@hpfb/sdk/ui';
 import { ErrorComponent } from './error/error.component';
 import { ContainerComponent } from './container/container.component';
 import { NoCacheHeadersInterceptor } from '@hpfb/sdk/ui';
 import { VersionService } from '@hpfb/sdk/ui/';
 import { InstructionService } from '@hpfb/sdk/ui';
+import { AppRoutingModule } from './app-routing.module';
+import { GlobalService } from './global/global.service';
+import { MinimalLogger } from '@hpfb/sdk/ui';
+import { DateLoggerService } from './date-logger.service';
+
 
 @NgModule({
   declarations: [AppComponent, ContainerComponent, ErrorComponent],
@@ -21,11 +26,7 @@ import { InstructionService } from '@hpfb/sdk/ui';
     // NumbersOnlyModule,
     UiModule,
     AppFormModule,
-    RouterModule.forRoot([
-      { path: '', component: ContainerComponent },
-      { path: 'error', component: ErrorComponent },
-      { path: '**', redirectTo: '/error' } // Redirect to error page for any other unknown route, ling todo: needed?
-    ]),
+    AppRoutingModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -38,7 +39,11 @@ import { InstructionService } from '@hpfb/sdk/ui';
     Title,
     VersionService,
     { provide: HTTP_INTERCEPTORS, useClass: NoCacheHeadersInterceptor, multi: true },
-    InstructionService
+    InstructionService,
+    { provide: MinimalLogger, useClass: DateLoggerService },
+    { provide: AbstractBridgeService, useClass: GlobalService },
+
+    GlobalService
   ],
   exports: [AppFormModule],
   bootstrap: [AppComponent],

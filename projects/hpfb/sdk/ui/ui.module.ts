@@ -27,6 +27,10 @@ import { InstructionService } from './information/instruction/instruction.servic
 import { LoggerService } from './logger/logger.service';
 import { ConverterService } from './converter/converter.service';
 import { EntityBaseService } from './model/entity-base.service';
+import { RoutingService } from './routing/routing.service';
+import { AddEditContactComponent } from './contact/add-edit.contact/add-edit.contact.component';
+import { MinimalLogger } from './minimal-logger.service';
+import { AbstractBridgeService, BridgeService } from './bridge.service';
 
 @NgModule({
   declarations: [
@@ -38,6 +42,7 @@ import { EntityBaseService } from './model/entity-base.service';
     CompanyContactRecordComponent,
     ContactDetailsComponent,
     ContactListComponent,
+    AddEditContactComponent,
     GreeterComponent,
     PrivacyStatementComponent,
     SecurityDisclaimerComponent,
@@ -51,8 +56,11 @@ import { EntityBaseService } from './model/entity-base.service';
     CommonFormDendencyModule,
     FileIoModule
   ],
-  providers: [AddressDetailsService, FileConversionService, UtilsService, VersionService, NoCacheHeadersInterceptor, InstructionService, 
-    LoggerService, ConverterService, EntityBaseService],
+  providers: [RoutingService, AddressDetailsService, FileConversionService, UtilsService, VersionService, NoCacheHeadersInterceptor, InstructionService, 
+    LoggerService, ConverterService, EntityBaseService,
+    { provide: MinimalLogger, useExisting: LoggerService },
+    // { provide: AbstractBridgeService, useClass: BridgeService },
+    ],
   exports: [
     LayoutComponent,
     ExpanderComponent,
@@ -62,6 +70,7 @@ import { EntityBaseService } from './model/entity-base.service';
     CompanyContactRecordComponent,
     ContactDetailsComponent,
     ContactListComponent,
+    AddEditContactComponent,
     GreeterComponent,
     PrivacyStatementComponent,
     SecurityDisclaimerComponent,

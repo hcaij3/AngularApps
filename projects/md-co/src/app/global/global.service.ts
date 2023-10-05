@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Enrollment } from '../models/Enrollment';
-import { InstructionService } from '@hpfb/sdk/ui';
+import { AbstractBridgeService, InstructionService } from '@hpfb/sdk/ui';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class GlobalService {
+@Injectable()
+export class GlobalService implements AbstractBridgeService{
 
-  constructor( private instructionService : InstructionService) { }
+  constructor( private instructionService : InstructionService) {
+    // super();
+    console.log ("===>in globalservice constructor ")
+  }
 
   private appVersion: string;
   private isInternal: boolean;
@@ -33,9 +34,11 @@ export class GlobalService {
 
   setHelpIndex(helpIndex: string[]) {
     this.helpIndex = this.instructionService.getHelpTextIndex(helpIndex);
+    console.log ("===>in globalservice setHelpIndex() " + JSON.stringify(this.helpIndex))
   }
 
   getHelpIndex() {
+    console.log ("===>in globalservice getHelpIndex() " + JSON.stringify(this.helpIndex))
     return this.helpIndex;
   }
 
