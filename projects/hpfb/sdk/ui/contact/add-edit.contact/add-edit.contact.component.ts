@@ -10,7 +10,7 @@ import { ICode } from '../../data-loader/data';
 import { RoutingService } from '../../routing/routing.service';
 import { ValidationService } from '../../validation/validation.service';
 import { MinimalLogger } from '../../minimal-logger.service';
-import { AbstractBridgeService } from '../../bridge.service';
+import { BRIDGE_SERVICE_ADAPTER, BridgeServiceAdapter } from '../../bridge.service';   
 
 @Component({
   selector: 'lib-add-edit.contact',
@@ -39,8 +39,8 @@ export class AddEditContactComponent implements OnInit {
 
   constructor(
       private formBuilder: FormBuilder,
-      private _routingService: RoutingService, private _loggerService: MinimalLogger, private injector: Injector //, @Inject(Service) private _bridgeService: AbstractBridgeService
-  ) {
+      private _routingService: RoutingService, private _loggerService: MinimalLogger, @Inject(BRIDGE_SERVICE_ADAPTER) private bridgeService: BridgeServiceAdapter //, @Inject(Service) private _bridgeService: AbstractBridgeService
+  ) { 
 
   }
 
@@ -48,8 +48,11 @@ export class AddEditContactComponent implements OnInit {
     // this.id = this.route.snapshot.params['id'];
     this.isAddMode = !this.id;
     this._loggerService.logInfo(this.isAddMode+"");
-    const myNonDepInjectedObj = this.injector.get(AbstractBridgeService);
-    this.helpTextSequences = myNonDepInjectedObj.getHelpIndex();
+
+    this.helpTextSequences = this.bridgeService.getHelpIndex();
+
+    // const myNonDepInjectedObj = this.injector.get(AbstractBridgeService);
+    // this.helpTextSequences = myNonDepInjectedObj.getHelpIndex();
     // password not required in edit mode
     // const passwordValidators = [Validators.minLength(6)];
     // if (this.isAddMode) {

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Inject, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CommonFormDendencyModule } from './common.form.dendency.module';
 import { FileIoModule } from './file-io/file-io.module';
@@ -28,9 +28,12 @@ import { LoggerService } from './logger/logger.service';
 import { ConverterService } from './converter/converter.service';
 import { EntityBaseService } from './model/entity-base.service';
 import { RoutingService } from './routing/routing.service';
-import { AddEditContactComponent } from './contact/add-edit.contact/add-edit.contact.component';
+// import { AddEditContactComponent } from './contact/add-edit.contact/add-edit.contact.component';
 import { MinimalLogger } from './minimal-logger.service';
-import { AbstractBridgeService, BridgeService } from './bridge.service';
+// import { AbstractBridgeService, BridgeService } from './bridge.service';
+
+import { AddEditContactComponent } from './contact/add-edit.contact/add-edit.contact.component';
+import { BRIDGE_SERVICE_ADAPTER, BridgeServiceAdapter } from './bridge.service';
 
 @NgModule({
   declarations: [

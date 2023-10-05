@@ -9,7 +9,7 @@ import { CompanyBaseService } from './company-base.service';
 import { GeneralInformation, Contact, PrimaryContact, AdministrativeChanges, Enrollment} from '../models/Enrollment';
 import { ContactListComponent, ControlMessagesComponent, FileConversionService, INameAddress, LoggerService, MinimalLogger, NO, UtilsService, YES } from '@hpfb/sdk/ui';
 import { NavigationEnd, Router } from '@angular/router';
-import { GlobalService } from '../global/global.service';
+import {  GlobalService } from '../global/global.service';
 
 @Component({
   selector: 'app-form-base',
@@ -74,8 +74,10 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
     private _formDataLoader: CompanyDataLoaderService,
     private _companyService: CompanyBaseService,
     private _fileService: FileConversionService, private _utilService: UtilsService, private router: Router, private _globalService: GlobalService,
-    private _loggerService: MinimalLogger
-  ) {
+    private _loggerService: MinimalLogger, private bridgeService: GlobalService) {
+
+      this.bridgeService.hello();
+      
     // _formDataLoader = new CompanyDataLoaderService(this.http);
     // this.countryList = [];
     this.showAdminChanges = false;

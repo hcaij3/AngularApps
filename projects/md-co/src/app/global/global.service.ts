@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Enrollment } from '../models/Enrollment';
-import { AbstractBridgeService, InstructionService } from '@hpfb/sdk/ui';
+import { BridgeServiceAdapter, InstructionService } from '@hpfb/sdk/ui';
 
-@Injectable()
-export class GlobalService implements AbstractBridgeService{
+@Injectable({providedIn: 'root'})
+export class GlobalService implements BridgeServiceAdapter {
 
   constructor( private instructionService : InstructionService) {
     // super();
     console.log ("===>in globalservice constructor ")
+  }
+
+  hello(): void {
+    console.log('@@@@hello Word in globalservice') 
   }
 
   private appVersion: string;
@@ -59,3 +63,10 @@ export class GlobalService implements AbstractBridgeService{
   }
 
 }
+
+
+
+// @Injectable({providedIn: 'root'})
+// export class BridgeService implements BridgeServiceAdapter {
+//     hello() { console.log('@@@@hello Word in globalservice') }
+// }
