@@ -3,13 +3,14 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import { ConvertResults } from '@hpfb/sdk/ui/file-io/convert-results';
 import { ICode, IKeyword } from '@hpfb/sdk/ui/data-loader/data';
-import { AMEND, ContactStatus, FINAL, XSLT_PREFIX, ROOT_TAG } from '../app.constants';
+import { AMEND, ContactStatus, FINAL, XSLT_PREFIX, ROOT_TAG, CONTACT_PAGE_PATH } from '../app.constants';
 import { CompanyDataLoaderService } from './company-data-loader.service';
 import { CompanyBaseService } from './company-base.service';
-import { GeneralInformation, Contact, PrimaryContact, AdministrativeChanges, Enrollment} from '../models/Enrollment';
-import { ContactListComponent, ControlMessagesComponent, FileConversionService, INameAddress, LoggerService, NO, UtilsService, YES } from '@hpfb/sdk/ui';
+import { GeneralInformation, Contact, PrimaryContact, AdministrativeChanges, Enrollment, DeviceCompanyEnrol} from '../models/Enrollment';
+import { ControlMessagesComponent, FileConversionService, INameAddress, LoggerService, NO, UtilsService, YES } from '@hpfb/sdk/ui';
 import { NavigationEnd, Router } from '@angular/router';
 import { GlobalService } from '../global/global.service';
+import { ContactListComponent } from '../contact/contact.list/contact.list.component';
 
 @Component({
   selector: 'app-form-base',
@@ -22,7 +23,7 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   @Input() isInternal;
   @Input() lang;
   @Input() helpTextSequences;
-  @ViewChild(ContactListComponent, {static: true}) companyContacts: ContactListComponent;
+  @ViewChild(ContactListComponent, {static: true}) companyContacts: ContactListComponent; 
   
   private _genInfoErrors = [];
   private _addressErrors = [];
@@ -67,6 +68,8 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
 
   public showAmendNote: boolean = false;
 
+  contactRoutePath: string = CONTACT_PAGE_PATH;
+
   constructor(
     private cdr: ChangeDetectorRef,
     private _formDataLoader: CompanyDataLoaderService,
@@ -74,8 +77,9 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
     private _fileService: FileConversionService, private _utilService: UtilsService, private router: Router, private _globalService: GlobalService,
     private _loggerService: LoggerService
   ) {
-    // _formDataLoader = new CompanyDataLoaderService(this.http);
-    // this.countryList = [];
+
+    this._loggerService.log("form.base", "constructor", "");
+
     this.showAdminChanges = false;
     this.showErrors = false;
     this.showMailToHelpText = false;
@@ -83,22 +87,23 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
     this.xslName = XSLT_PREFIX.toUpperCase() + this._utilService.getApplicationMajorVersion(this._globalService.getAppVersion()) + '.xsl';
   }
 
-  ngOnInit() {  
+  ngOnInit() { 
     try {
       if (!this._globalService.getEnrollment()) {
-        this._loggerService.log("form.base", "onInit", "enrollement doesn't exist");
+        this._loggerService.log("form.base", "onInit", "enrollement doesn't exist, create a new one");
         this.enrollModel = this._companyService.getEmptyEnrol();
         this._globalService.setEnrollment(this.enrollModel);
       } else {
-        this._loggerService.log("form.base", "onInit", "get enrollement from globalservice");
         this.enrollModel = this._globalService.getEnrollment();
+        this._loggerService.log("form.base", "onInit", "get enrollement from globalservice", JSON.stringify(this.enrollModel));
       }
 
-      this.genInfoModel = this.enrollModel.DEVICE_COMPANY_ENROL.general_information;  
-      this.addressModel = this.enrollModel.DEVICE_COMPANY_ENROL.address; 
-      this.contactModel = null;
-      this.adminChangesModel = this.enrollModel.DEVICE_COMPANY_ENROL.administrative_changes; 
-      this.primContactModel = this.enrollModel.DEVICE_COMPANY_ENROL.primary_contact; 
+      const companyEnroll: DeviceCompanyEnrol = this.enrollModel[this.rootTagText];
+      this.genInfoModel = companyEnroll.general_information;  
+      this.addressModel = companyEnroll.address; 
+      this.contactModel = companyEnroll.contacts;
+      this.adminChangesModel = companyEnroll.administrative_changes; 
+      this.primContactModel = companyEnroll.primary_contact; 
 
       if (!this.companyForm) {
         this.companyForm = this._companyService.buildForm();
@@ -109,7 +114,7 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
         // this._loggerService.log("form.base", "onInit", JSON.stringify(data));
         this.keywordList = data;
         this.languageList = data.find(x => (x.name === 'languages')).data;
-        this._loggerService.log("form.base", "onInit", JSON.stringify(this.languageList));
+        // this._loggerService.log("form.base", "onInit", JSON.stringify(this.languageList));
       });
 
       this._formDataLoader.getContactStatuseList().subscribe((data) => {
@@ -122,38 +127,15 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
       });
 
       this._formDataLoader.getProvinceList().subscribe((data) => {
-        // this._loggerService.log("form.base", "onInit", JSON.stringify(data));
         this.provinceList = data;
       });
 
       this._formDataLoader.getStateList().subscribe((data) => {
-        // this._loggerService.log("form.base", "onInit", JSON.stringify(data));
         this.stateList = data;
       });
 
-
-      // .subscribe(
-      //   (response) => {
-      //     this.countries = response;
-      //   },
-      //   (error) => {
-      //     console.error('Error fetching countries:', error);
-      //   }
-      // );
-
-      // this.countryList = await this._formDataLoader.getCountries(
-      //   this.translate.currentLang
-      // );
-      // this.provinceList = await this._formDataLoader.getProvinces(
-      //   this.translate.currentLang
-      // );
-      // this.stateList = await this._formDataLoader.getStates(
-      //   this.translate.currentLang
-      // );
-      this._loggerService.log("form.base", "onInit", "isInternal: " + this.isInternal);
       if (this.isInternal === NO) {
         this.isInternalSite = false;
-        // this._loggerService.log('isInternalSite in ngOnInit: ' + this.isInternalSite);
       } else {
         this.saveXmlLabel = 'approve.final';
       }
@@ -169,7 +151,9 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this._loggerService.log("form.base", "ngOnChanges", this._utilService.printComponentChanges(changes));
     if (changes['contactModel']) {
+      this._loggerService.log("form.base", "ngOnChanges", "contactModel");
       this._updateContactList(changes['primContactModel'].currentValue);
     }
   }

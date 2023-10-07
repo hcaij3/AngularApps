@@ -53,8 +53,6 @@ export class CompanyInfoComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     this.detailsChanged = 0;
-    this._loggerService.log('company.info', 'onInit', 'this.isInternal: ' + this.isInternal);
-
     
     this._formDataLoader.getKeywordList().subscribe((keywords) => {
       try {

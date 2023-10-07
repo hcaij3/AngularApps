@@ -4,6 +4,7 @@ export const NEW:string='NEW';
 export const AMEND:string='AMEND';
 export const FINAL:string='FINAL';
 export const XSLT_PREFIX = 'REP_MDS_CO_';
+export const CONTACT_PAGE_PATH= 'contact';
 
 export enum ContactStatus {
     NEW,

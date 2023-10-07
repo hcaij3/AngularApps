@@ -1,0 +1,29 @@
+<h1 *ngIf="isAddMode">Add {{'heading.contactDetails'| translate}}&nbsp;</h1>
+<h1 *ngIf="!isAddMode">Edit {{'heading.contactDetails'| translate}}&nbsp; todo sequenceNum</h1>
+<pre>isInternal: {{isInternal}}</pre>
+
+
+    <!-- <contact-details [showErrors]="showErrors" [isInternal]="isInternal" [languageList]="languageList"  [contactStatusList]="contactStatusList" [lang]="lang"
+                   [detailsChanged]="updateChild" [group]="contactDetailsFormGroup"
+                   [helpTextSequences]="helpTextSequences" [editable] = false
+                   (errorList)="updateErrorList($event)"></contact-details> -->
+
+       <contact-details [showErrors]="showErrors" [isInternal]="isInternal" [languageList]="languageList"  [lang]="lang"
+                   
+                   [helpTextSequences]="helpTextSequences" [editable] = true
+                   ></contact-details>
+
+      <div class="row">
+        <div class="btn-group-sm col-xs-12 text-left">
+          <button *ngIf="isExternalNewContact()" class="btn btn-primary" (click)="saveContactRecord()" >{{'save.contact'|translate}}</button>&nbsp;
+          <button *ngIf="isInternalActiveContact()" class="btn btn-default" (click)="activeContactRecord()" >{{'set.active.status'|translate}}</button>&nbsp;
+          <button *ngIf="isExternalNotNewContact()" class="btn btn-default" (click)="setStatusToRevise()" [disabled]="showErrorSummary()" >{{'set.revise.status'|translate}}</button>
+          <button *ngIf="isInternalDeleteContact()" class="btn btn-danger" (click)="deleteContactRecord()" >{{'remove.contact'|translate}}</button>&nbsp;
+          <button *ngIf="isExternalNotNewContact()" class="btn btn-default" (click)="setStatusToRemove()" [disabled]="showErrorSummary()" >{{'set.remove.status'|translate}}</button>
+          <button *ngIf="isExternalNewContact()" class="btn btn-danger" (click)="deleteContactRecord()" >{{'discard.record'|translate}}</button>
+          <span   *ngIf="!isInternal">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <button class="btn btn-default" (click)="revertContactRecord()" >{{'discard.changes'|translate}}</button>
+          <button class="btn btn-default" (click)="gotoHomePage()" >Cancel</button>
+        </div>
+      </div>
+    
