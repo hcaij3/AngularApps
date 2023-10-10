@@ -23,8 +23,8 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   @Input() isInternal;
   @Input() lang;
   @Input() helpTextSequences;
-  @ViewChild(ContactListComponent, {static: true}) companyContacts: ContactListComponent; 
-  
+  @ViewChild(ContactListComponent, {static: true}) companyContacts: ContactListComponent;
+
   private _genInfoErrors = [];
   private _addressErrors = [];
   private _contactErrors = [];
@@ -32,8 +32,8 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   // private _primContactErrors = [];
   public companyForm: FormGroup;
   public errorList = [];
-  
-  public rootTagText = ROOT_TAG; 
+
+  public rootTagText = ROOT_TAG;
   private xslName: string;
 
   public isInternalSite = true;
@@ -53,10 +53,10 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   public enrollModel : Enrollment;
 
   public addressModel : INameAddress;
-  public genInfoModel : GeneralInformation; 
+  public genInfoModel : GeneralInformation;
   public contactModel : Contact[];
   public adminChangesModel :AdministrativeChanges;
-  public primContactModel : PrimaryContact; 
+  public primContactModel : PrimaryContact;
   public helpIndex = [] ; // todo CompanyBaseService.getHelpTextIndex();
 
   public saveXmlLabel = 'save.draft';
@@ -87,7 +87,7 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
     this.xslName = XSLT_PREFIX.toUpperCase() + this._utilService.getApplicationMajorVersion(this._globalService.getAppVersion()) + '.xsl';
   }
 
-  ngOnInit() { 
+  ngOnInit() {
     try {
       if (!this._globalService.getEnrollment()) {
         this._loggerService.log("form.base", "onInit", "enrollement doesn't exist, create a new one");
@@ -390,11 +390,12 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
    * update adminChanges to show the text info in the adminChanges component
    */
   private _updateAdminChanges() {
-    this.adminChanges[1] = this.genInfoModel.amend_reasons.manufacturer_name_change === YES;
-    this.adminChanges[2] = this.genInfoModel.amend_reasons.manufacturer_address_change === YES;
-    this.adminChanges[3] = this.genInfoModel.amend_reasons.facility_change === YES;
-    this.adminChanges[0] = this.genInfoModel.are_licenses_transfered  === YES ||
-        this.adminChanges[1] || this.adminChanges[2] || this.adminChanges[3];
+    // ling todo
+    // this.adminChanges[1] = this.genInfoModel.amend_reasons.manufacturer_name_change === YES;
+    // this.adminChanges[2] = this.genInfoModel.amend_reasons.manufacturer_address_change === YES;
+    // this.adminChanges[3] = this.genInfoModel.amend_reasons.facility_change === YES;
+    // this.adminChanges[0] = this.genInfoModel.are_licenses_transfered  === YES ||
+    //     this.adminChanges[1] || this.adminChanges[2] || this.adminChanges[3];
   }
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
@@ -459,11 +460,11 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
 
   gotoErrorPage(): void {
     this.router.navigate(['/error']);
-  }	 
+  }
 
 
   private init(companyEnroll: DeviceCompanyEnrol){
-    this.genInfoModel = companyEnroll.general_information; 
+    this.genInfoModel = companyEnroll.general_information;
     // set amend reasons and admin changes section to null if status is Final
     if (this.genInfoModel.status === FINAL) {
       this.genInfoModel.amend_reasons = {
@@ -475,15 +476,15 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
         other_details: '',
       };
       // this.genInfoModel.are_licenses_transfered = '';
-    }        
+    }
 
     this._updateAdminChanges();
     if (companyEnroll.administrative_changes) {
       this.adminChangesModel = companyEnroll.administrative_changes;
     }
 
-    this.addressModel = companyEnroll.address; 
-    this.primContactModel = companyEnroll.primary_contact; 	
+    this.addressModel = companyEnroll.address;
+    this.primContactModel = companyEnroll.primary_contact;
 
     const cont = companyEnroll.contacts['contact'];
     if (cont) {
