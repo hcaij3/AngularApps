@@ -1,5 +1,8 @@
-<div> <pre>editable: {{editable}}</pre>
-  <div [formGroup]="contactFormLocalModel">
+<div>
+
+  <pre>isInternal:{{isInternal}} | editable: {{editable}} </pre>
+
+  <div [formGroup]="contactFormLocalModel"> 
 
     <ng-container *ngIf="editable">
       <div class="row">
@@ -163,6 +166,22 @@
           </label>
         </div>
       </div>
+
+      <div class="row">
+        <div class="btn-group-sm col-xs-12 text-left">
+          <button *ngIf="isExternalNewContact()" class="btn btn-primary" (click)="saveContactRecord()" >{{'save.contact'|translate}}</button>&nbsp;
+          <button *ngIf="isInternalActiveContact()" class="btn btn-default" (click)="activeContactRecord()" >{{'set.active.status'|translate}}</button>&nbsp;
+          <button *ngIf="isExternalNotNewContact()" class="btn btn-default" (click)="setStatusToRevise()" [disabled]="showErrorSummary()" >{{'set.revise.status'|translate}}</button>
+          <button *ngIf="isInternalDeleteContact()" class="btn btn-danger" (click)="deleteContactRecord()" >{{'remove.contact'|translate}}</button>&nbsp;
+          <button *ngIf="isExternalNotNewContact()" class="btn btn-default" (click)="setStatusToRemove()" [disabled]="showErrorSummary()" >{{'set.remove.status'|translate}}</button>
+          <button *ngIf="isExternalNewContact()" class="btn btn-danger" (click)="deleteContactRecord()" >{{'discard.record'|translate}}</button>
+          <span   *ngIf="!isInternal">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <button class="btn btn-default" (click)="revertContactRecord()" >{{'discard.changes'|translate}}</button>
+          <button class="btn btn-default" (click)="gotoHomePage()" >Cancel</button>
+        </div>
+      </div>
+
+      <pre>{{contactFormLocalModel.value |json}}</pre>
     </ng-container>
 
     <ng-container *ngIf="!editable">
@@ -218,11 +237,9 @@
         </div>
       </div>
 
-      ===========buttons=====
+      ===========buttons for read mode=====
 
     </ng-container>
-
-    <pre>{{contactFormLocalModel.value |json}}</pre>
 
   </div>
 </div>

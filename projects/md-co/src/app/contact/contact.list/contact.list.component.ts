@@ -8,7 +8,7 @@ import {CompanyContactRecordService} from '../company-contact-record/company-con
 import {ContactListService} from './contact-list.service';
 import {TranslateService} from '@ngx-translate/core';
 import { ICode, RoutingService, errorSummClassName, ListBaseComponent, ErrorSummaryComponent, UtilsService, LoggerService } from '@hpfb/sdk/ui';
-
+import { GlobalService } from '../../global/global.service';
 
 //  import {ExpanderComponent} from '../../common/expander/expander.component';
 @Component({
@@ -68,15 +68,10 @@ export class ContactListComponent extends ListBaseComponent implements OnInit, O
       binding: 'status_text',
       width: '10'
     },
-    {
-      label: 'Actions',
-      binding: 'last_name',
-      width: '20'
-    },
   ];
 
   constructor(private _fb: FormBuilder, private translate: TranslateService, private _routingService: RoutingService, private _utilService: UtilsService,
-    private _loggerService: LoggerService) {
+    private _loggerService: LoggerService,private _globalService: GlobalService) {
     super();
     this.service = new ContactListService();
     this.dataModel = this.service.getModelRecordList();
@@ -156,7 +151,7 @@ export class ContactListComponent extends ListBaseComponent implements OnInit, O
    * @param {SimpleChanges} changes
    */
   ngOnChanges(changes: SimpleChanges) {
-    this._loggerService.log("contact.list", "ngOnChanges", this._utilService.printComponentChanges(changes));
+    this._loggerService.log("contact.list", "ngOnChanges", JSON.stringify(this._utilService.printComponentChanges(changes)));
     if (changes['loadFileIndicator'] && !changes['loadFileIndicator'].firstChange) {
       this.newRecordIndicator = false;
       this._deleteContactInternal(0);

@@ -7,7 +7,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {ContactDetailsComponent} from '../contact.details/contact.details.component';
 import {ContactDetailsService} from '../contact.details/contact.details.service';
 import {CompanyContactRecordService} from './company-contact-record.service';
-import {ErrorSummaryComponent, ControlMessagesComponent, ICode} from '@hpfb/sdk/ui';
+import {ErrorSummaryComponent, ControlMessagesComponent, ICode, UtilsService, LoggerService} from '@hpfb/sdk/ui';
 
 @Component({
   selector: 'company-contact-record',
@@ -53,7 +53,8 @@ export class CompanyContactRecordComponent implements OnInit, AfterViewInit {
   public errorSummaryChild: ErrorSummaryComponent = null;
   public headingLevel = 'h4';
 
-  constructor(private _fb: FormBuilder,  private cdr: ChangeDetectorRef) {
+  constructor(private _fb: FormBuilder,  private cdr: ChangeDetectorRef, private _utilService: UtilsService,
+    private _loggerService: LoggerService) {
     this.showErrors = false;
     this.showErrSummary = false;
     this.hasRecords = true;
@@ -112,7 +113,7 @@ export class CompanyContactRecordComponent implements OnInit, AfterViewInit {
   }
 
   ngOnChanges (changes: SimpleChanges) {
-
+    this._loggerService.log("company.contact", "ngOnChanges", JSON.stringify(this._utilService.printComponentChanges(changes)));
     if (changes['detailsChanged']) { // used as a change indicator for the model
       if (this.contactFormRecord) {
         this.setToLocalModel();

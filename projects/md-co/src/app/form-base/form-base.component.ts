@@ -95,15 +95,11 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
         this._globalService.setEnrollment(this.enrollModel);
       } else {
         this.enrollModel = this._globalService.getEnrollment();
-        this._loggerService.log("form.base", "onInit", "get enrollement from globalservice", JSON.stringify(this.enrollModel));
+        this._loggerService.log("form.base", "onInit", "get enrollement from globalservice", JSON.stringify(this.enrollModel, null, 2));
       }
 
       const companyEnroll: DeviceCompanyEnrol = this.enrollModel[this.rootTagText];
-      this.genInfoModel = companyEnroll.general_information;  
-      this.addressModel = companyEnroll.address; 
-      this.contactModel = companyEnroll.contacts;
-      this.adminChangesModel = companyEnroll.administrative_changes; 
-      this.primContactModel = companyEnroll.primary_contact; 
+      this.init(companyEnroll);
 
       if (!this.companyForm) {
         this.companyForm = this._companyService.buildForm();
@@ -304,43 +300,48 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
 
   public processFile(fileData: ConvertResults) {
     this.loadFileIndicator++;
-    // this._loggerService.log('form.base', 'processingFile', JSON.stringify(fileData, null, 2));
+    const enrollment : Enrollment = fileData.data;
+    this._globalService.setEnrollment(enrollment);
+    this._loggerService.log('form.base', 'processingFile', JSON.stringify(enrollment, null, 2));
 
-    this.genInfoModel = fileData.data.DEVICE_COMPANY_ENROL.general_information;
+    const companyEnroll: DeviceCompanyEnrol = enrollment[this.rootTagText];
+    this.init(companyEnroll);
+
+    // this.genInfoModel = fileData.data.DEVICE_COMPANY_ENROL.general_information;
     // set amend reasons and admin changes section to null if status is Final
-    if (this.genInfoModel.status === FINAL) {
-      this.genInfoModel.amend_reasons = {
-        manufacturer_name_change: '',
-        manufacturer_address_change: '',
-        facility_change: '',
-        contact_change: '',
-        other_change: '',
-        other_details: '',
-      };
-    this.genInfoModel.are_licenses_transfered = '';
-    }
+    // if (this.genInfoModel.status === FINAL) {
+    //   this.genInfoModel.amend_reasons = {
+    //     manufacturer_name_change: '',
+    //     manufacturer_address_change: '',
+    //     facility_change: '',
+    //     contact_change: '',
+    //     other_change: '',
+    //     other_details: '',
+    //   };
+    // this.genInfoModel.are_licenses_transfered = '';
+    // }
 
-    this._updateAdminChanges();
-    if (fileData.data.DEVICE_COMPANY_ENROL.administrative_changes) {
-      this.adminChangesModel =
-        fileData.data.DEVICE_COMPANY_ENROL.administrative_changes;
-    }
+    // this._updateAdminChanges();
+    // if (fileData.data.DEVICE_COMPANY_ENROL.administrative_changes) {
+    //   this.adminChangesModel =
+    //     fileData.data.DEVICE_COMPANY_ENROL.administrative_changes;
+    // }
 
-    this.addressModel = fileData.data.DEVICE_COMPANY_ENROL.address;
-    this.primContactModel = fileData.data.DEVICE_COMPANY_ENROL.primary_contact;
-    const cont = fileData.data.DEVICE_COMPANY_ENROL.contacts['contact'];
-    if (cont) {
-      this.contactModel = cont instanceof Array ? cont : [cont];
-      this.contactModelUpdated(this.contactModel);
-    } else {
-      this.contactModel = [];
-    }
-    if (this.isInternalSite) {
-      // once load data files on internal site, lower components should update error list and push them up
-      this.showErrors = true;
-    }
+    // this.addressModel = fileData.data.DEVICE_COMPANY_ENROL.address;
+    // this.primContactModel = fileData.data.DEVICE_COMPANY_ENROL.primary_contact;
+    // const cont = fileData.data.DEVICE_COMPANY_ENROL.contacts['contact'];
+    // if (cont) {
+    //   this.contactModel = cont instanceof Array ? cont : [cont];
+    //   this.contactModelUpdated(this.contactModel);
+    // } else {
+    //   this.contactModel = [];
+    // }
+    // if (this.isInternalSite) {
+    //   // once load data files on internal site, lower components should update error list and push them up
+    //   this.showErrors = true;
+    // }
 
-    this.showAmendNote = (fileData.data.DEVICE_COMPANY_ENROL.general_information.status === FINAL);
+    // this.showAmendNote = (fileData.data.DEVICE_COMPANY_ENROL.general_information.status === FINAL);
   }
 
   private _updatedAutoFields() {
@@ -460,5 +461,44 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/error']);
   }	 
 
+
+  private init(companyEnroll: DeviceCompanyEnrol){
+    this.genInfoModel = companyEnroll.general_information; 
+    // set amend reasons and admin changes section to null if status is Final
+    if (this.genInfoModel.status === FINAL) {
+      this.genInfoModel.amend_reasons = {
+        manufacturer_name_change: '',
+        manufacturer_address_change: '',
+        facility_change: '',
+        contact_change: '',
+        other_change: '',
+        other_details: '',
+      };
+      // this.genInfoModel.are_licenses_transfered = '';
+    }        
+
+    this._updateAdminChanges();
+    if (companyEnroll.administrative_changes) {
+      this.adminChangesModel = companyEnroll.administrative_changes;
+    }
+
+    this.addressModel = companyEnroll.address; 
+    this.primContactModel = companyEnroll.primary_contact; 	
+
+    const cont = companyEnroll.contacts['contact'];
+    if (cont) {
+      this.contactModel = cont instanceof Array ? cont : [cont];
+      this.contactModelUpdated(this.contactModel);
+    } else {
+      this.contactModel = [];
+    }
+
+    if (this.isInternalSite) {
+      // once load data files on internal site, lower components should update error list and push them up
+      this.showErrors = true;
+    }
+
+    this.showAmendNote = ( this.genInfoModel.status === FINAL);
+  }
 
 }

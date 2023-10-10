@@ -15,13 +15,6 @@ import { Enrollment } from '../../models/Enrollment';
   encapsulation: ViewEncapsulation.None
 })
 export class AddEditContactComponent implements OnInit {
-  @Input() detailsChanged: number;
-  @Input() showErrors: boolean;
-  
-
-  @Output() errorList = new EventEmitter(true);
-  @ViewChildren(ControlMessagesComponent) msgList: QueryList<ControlMessagesComponent>;
-
   contactFormLocalModel!: FormGroup;
   id!: string;
   isAddMode!: boolean;
@@ -32,13 +25,14 @@ export class AddEditContactComponent implements OnInit {
   public helpTextSequences:any;
   public lang: string;
   public languageList: ICode[];
-  private contactStatusList: ICode[];
+  public contactStatusList: ICode[];
 
   constructor(private _addEditContactService: AddEditContactService, private _globalService: GlobalService, private _routingService: RoutingService) {
     this.languageList = this._routingService.getStateData('navLanguageList');
-    // console.log(this.languageList)
     this.contactStatusList = this._routingService.getStateData('navStatusList');
-    console.log(this.contactStatusList)
+    if (!this.languageList || !this.contactStatusList) {
+      this._routingService.navigateTo("")
+    }
   }
 
   ngOnInit() {
@@ -73,13 +67,12 @@ export class AddEditContactComponent implements OnInit {
     //         .subscribe(x => this.f.patchValue(x));
     // }
    
-    this.contactFormLocalModel = this._addEditContactService.getReactiveModel(this.isInternal);
+    // this.contactFormLocalModel = this._addEditContactService.getReactiveModel(this.isInternal);
 
 
 }
 
-// convenience getter for easy access to form fields
-get f() { return this.contactFormLocalModel.controls; }
+
 
 onSubmit() {
     // this.submitted = true;
@@ -119,169 +112,6 @@ onSubmit() {
 //         })
 //         .add(() => this.loading = false);
 // }
-  onblur() {
-    // console.log(' BLRRE$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-
-  }
-
-    /**
-   * Changes the local model back to the last saved version of the contact
-   */
-    public revertContactRecord(): void {
-      // this.revertRecord.emit(this.form);
-      // this.f.markAsPristine();
-    }
-  
-    /***
-     * Deletes the contact reocord with the selected id from both the model and the form
-     */
-    public deleteContactRecord(): void {
-      // this.errorSummaryChild = null;
-      // this.deleteRecord.emit(this.f.value.id);
-      // this._emitErrors();
-    }
-    /***
-     * Deletes the contact reocord with the selected id from both the model and the form
-     */
-    public setStatusToRevise(): void {
-      // const conRecord = <FormGroup>this.f['contactDetails'];
-      // ling todo
-      // if (conRecord.controls['status'].value != ContactDetailsService.statusListExternal[1].id) {
-      //   conRecord.controls['status'].setValue(ContactDetailsService.statusListExternal[1].id);
-      // }
-      this.saveContactRecord();
-    }
-    /***
-     * Deletes the contact reocord with the selected id from both the model and the form
-     */
-    public setStatusToRemove(): void {
-      // const conRecord = <FormGroup>this.f['contactDetails'];
-      // ling todo
-      // if (conRecord.controls['status'].value != ContactDetailsService.statusListExternal[2].id) {
-      //   conRecord.controls['status'].setValue(ContactDetailsService.statusListExternal[2].id);
-      // }
-      this.saveContactRecord();
-    }
-    /***
-     * Deletes the contact reocord with the selected id from both the model and the form
-     */
-    public activeContactRecord(): void {
-      // const conRecord = <FormGroup>this.f['contactDetails'];
-      // ling todo
-      // if (conRecord.controls['status'].value != ContactDetailsService.statusListExternal[3].id) {
-      //   conRecord.controls['status'].setValue(ContactDetailsService.statusListExternal[3].id);
-      // }
-      this.saveContactRecord();
-    }
-  
-    public saveContactRecord(): void {
-      // console.log(this.errorList);
-      if (this.contactFormLocalModel.valid) {
-        // this.saveRecord.emit((this.contactFormLocalModel));
-        // this.showErrSummary = false;
-        // this.showErrors = false;
-        // this.contactFormLocalModel.markAsPristine();
- 
-        // this._routingService.navigateToWithExtra('', this.contactFormLocalModel.value);
-
-        // convert form data to output object
-        let contactRec = this._addEditContactService.mapFormModelToDataModel(this.contactFormLocalModel, this.lang, this.languageList, this.contactStatusList);
-        // console.log(JSON.stringify(contactRec));
-        let enroll: Enrollment = this._globalService.getEnrollment();
-        if (enroll) {
-            let contacts = enroll.DEVICE_COMPANY_ENROL.contacts;
-            const largestId = contacts.reduce((maxId, obj) => {
-              return obj.id > maxId ? obj.id : maxId;
-            }, -Infinity);
-            //  console.log(largestId);
-             if (!isFinite(largestId)) {
-              // the array is empty
-              contactRec.id = 1
-             } else {
-              contactRec.id = largestId + 1
-             }
-            //  console.log(JSON.stringify(contactRec));
-             enroll.DEVICE_COMPANY_ENROL.contacts.push(contactRec);
-        } else {
-          // goto error page?
-        }
-       
-
-        this.gotoHomePage();
-
-      } else {
-        this.checkInvalidFields();
-        // id is used for an error to ensure the record gets saved
-        // let temp = this.contactFormLocalModel.value.id;
-        // this.contactFormLocalModel.controls['id'].setValue(1);
-        // if (this.contactFormLocalModel.valid) {
-        //   this.contactFormLocalModel.controls['id'].setValue(temp);
-        //   this.saveRecord.emit((this.contactFormLocalModel));
-        // } else {
-        //   this.contactFormLocalModel.controls['id'].setValue(temp);
-        //   this.showErrSummary = true;
-        //   this.showErrors = true;
-        // }
-      }
-    }
-
-    checkInvalidFields() {
-      Object.keys(this.contactFormLocalModel.controls).forEach(key => {
-        const control = this.contactFormLocalModel.get(key);
-        if (control.invalid) {
-          console.log(`Field '${key}' is invalid`);
-        }
-      });
-    }
-
-  /**
-   * Changes the local model back to the last saved version of the contact
-   */
-  public showErrorSummary(): boolean {
-    // return (this.showErrSummary && this.errorList.length > 0);
-    return true;
-  }
 
 
-  /**
-   * show revise and remove contact button
-   */
-  public isExternalNotNewContact(): boolean {
-    // const conRecord = <FormGroup>this.f['contactDetails'];
-    // return (!this.isInternal && conRecord.controls['status'].value != 'NEW');
-    return (!this.isInternal && this.f['status'].value != 'NEW');
-  }
-
-  /**
-   * internal site show active contact button
-   */
-  public isInternalActiveContact(): boolean {
-    // const conRecord = <FormGroup>this.f['contactDetails'];
-    // return (this.isInternal && conRecord.controls['status'].value != 'REMOVE');
-    return (this.isInternal && this.f['status'].value != 'REMOVE');
-  }
-
-  /**
-   * External site show delete contact button
-   */
-  public isExternalNewContact(): boolean {
-    // return (!this.isInternal && (<FormGroup>this.f['contactDetails']).controls['status'].value == 'NEW');
-    return !this.isInternal && (this.f['status'].value == 'NEW');
-  }
-
-  /**
-   * Internal site show delete contact button
-   */
-  public isInternalDeleteContact(): boolean {
-    // return (this.isInternal && (<FormGroup>this.f['contactDetails']).controls['status'].value == 'REMOVE');
-    return this.isInternal && (this.f['status'].value == 'REMOVE');
-  }
-
-  // get contactDetailsFormGroup() {
-  //   return this.f.get('contactDetails') as FormGroup;
-  // }    
-
-  gotoHomePage(): void {
-    this._routingService.navigateTo('');
-  }
 }
