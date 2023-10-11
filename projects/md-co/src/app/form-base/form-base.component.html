@@ -16,7 +16,7 @@
               <a class="fn-lnk" href="#co1"><span class="wb-inv">{{'instruction'|translate}}</span>{{helpTextSequences['loadFileIndx']}}</a>
             </sup>
           </header>
-          <div class="panel-body"> 
+          <div class="panel-body">
             <lib-file-reader (complete)="processFile($event)" [rootTag]="rootTagText">
               <div extraNote [ngClass]="'alert alert-info'" *ngIf="showAmendNote"><span>{{'amend.note' | translate}}</span></div>
             </lib-file-reader>
@@ -40,7 +40,7 @@
           </header>
           <div class="panel-body">
 
-            <com-gen-info [showErrors]="showErrors" [isInternal]="isInternalSite"
+            <com-gen-info [showErrors]="showErrors" [isInternal]="isInternal"
                               [lang]="lang"
                               [genInfoModel]="genInfoModel"
                               [helpTextSequences]="helpIndex"
@@ -60,7 +60,7 @@
                                    [addressModel]="addressModel" [stateList]="stateList"
                                    [helpTextSequences]="helpIndex"
                                    (errorList)="processAddressErrors($event)"></lib-address-details>
-                   <!-- todo [detailsChanged]="updateChild" --> 
+                   <!-- todo [detailsChanged]="updateChild" -->
                 </div>
               </section>
             </div>
@@ -81,13 +81,13 @@
                     <!--</sup>-->
                   </h3>
                 </header>
-                <div class="panel-body"> 
-                  <app-contact-list  (errors)="processContactErrors($event)" [isInternal]="isInternalSite"
+                <div class="panel-body">
+                  <contact-list  (errors)="processContactErrors($event)" [isInternal]="isInternal"
                                  [loadFileIndicator]="loadFileIndicator" [lang]="lang"
                                  [helpTextSequences]="helpIndex" [xmlStatus]="genInfoModel.status"
                                  [showErrors]="showErrors" [contactModel]="contactModel"
-                                 [languageList]="languageList" [contactStatusList]="contactStatusList" [contactRoutePath]="contactRoutePath"
-                                 (contactsUpdated)="contactModelUpdated($event)"></app-contact-list>
+                                 [languageList]="languageList" [contactStatusList]="contactStatusList"
+                                 (contactsUpdated)="contactModelUpdated($event)"></contact-list>
                 </div>
               </section>
               </div>
@@ -124,7 +124,7 @@
           <div class="panel-body">
             <div class="row">
               <!-- <comp-admin-changes [showErrors]="showErrors" [showAdminChanges]="adminChanges" [lang]="lang"
-                                  [detailsChanged]="updateChild" [isInternal]="isInternalSite"
+                                  [detailsChanged]="updateChild" [isInternal]="isInternal"
                                   [adminChangesModel]="adminChangesModel"
                                   [helpTextSequences]="helpIndex"
                                   (adminChangesErrorList)="processAdminChangesErrors($event)"></comp-admin-changes> -->
@@ -146,7 +146,7 @@
           {{saveXmlLabel|translate}}
         </button>
       </div>
-      <div class="form-group col-md-4" *ngIf="!isInternalSite">
+      <div class="form-group col-md-4" *ngIf="!isInternal">
         <a class="btn btn-primary btn-lg active" [href] = "mailToLink" (click)="mailto()"
            [class.disabled]="disableMailtoLink()" >
           {{'mailto.label'|translate}}
