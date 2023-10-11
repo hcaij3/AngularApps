@@ -283,7 +283,7 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
       },
     };
     // if (this.contactModel && this.contactModel.length > 0) {       //ling todo what is the logic here?
-    //   const cm = !this.isInternalSite
+    //   const cm = !this.isInternal
     //     ? this._removeHcStatus(this.contactModel)
     //     : this.contactModel;
     //   result.DEVICE_COMPANY_ENROL.contacts = { contact: cm };
@@ -333,7 +333,7 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
     // } else {
     //   this.contactModel = [];
     // }
-    // if (this.isInternalSite) {
+    // if (this.isInternal) {
     //   // once load data files on internal site, lower components should update error list and push them up
     //   this.showErrors = true;
     // }
@@ -463,15 +463,17 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   private init(companyEnroll: DeviceCompanyEnrol){
     this.genInfoModel = companyEnroll.general_information;
     // set amend reasons and admin changes section to null if status is Final
-    if (this.genInfoModel.status === FINAL) {
-      this.genInfoModel.amend_reasons = {
-        manufacturer_name_change: '',
-        manufacturer_address_change: '',
-        facility_change: '',
-        contact_change: '',
-        other_change: '',
-        other_details: '',
-      };
+    if (this.genInfoModel.status === FINAL) {   // ling todo review this
+      // this.genInfoModel.amend_reasons = {
+      //   manufacturer_name_change: '',
+      //   manufacturer_address_change: '',
+      //   facility_change: '',
+      //   contact_change: '',
+      //   other_change: '',
+      //   other_details: '',
+      // };
+      this.genInfoModel.amend_reasons = [];
+      this.genInfoModel.amend_reason_other_details = '';
       // this.genInfoModel.are_licenses_transfered = '';
     }
 
@@ -491,7 +493,7 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
       this.contactModel = [];
     }
 
-    if (this.isInternalSite) {
+    if (this.isInternal) {
       // once load data files on internal site, lower components should update error list and push them up
       this.showErrors = true;
     }

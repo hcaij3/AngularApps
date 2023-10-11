@@ -24,6 +24,7 @@ import { InstructionService } from './information/instruction/instruction.servic
 import { LoggerService } from './logger/logger.service';
 import { ConverterService } from './converter/converter.service';
 import { EntityBaseService } from './model/entity-base.service';
+import { ListServiceNew } from './list/list.service';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,7 @@ import { EntityBaseService } from './model/entity-base.service';
     FileIoModule
   ],
   providers: [AddressDetailsService, FileConversionService, UtilsService, VersionService, NoCacheHeadersInterceptor, InstructionService, 
-    LoggerService, ConverterService, EntityBaseService],
+    LoggerService, ConverterService, EntityBaseService, ListServiceNew],
   exports: [
     LayoutComponent,
     ExpanderComponent,

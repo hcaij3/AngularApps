@@ -55,3 +55,4 @@ export * from './routing/routing.service'
 export * from './list/list-base.component';
 export * from './list/list-service';
 export * from './list/listable';
+export * from './list/list.service';
