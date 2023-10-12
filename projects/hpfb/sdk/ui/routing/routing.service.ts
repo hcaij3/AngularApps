@@ -11,4 +11,12 @@ export class RoutingService {
   navigateTo(path: string) {
     this.router.navigate([path]);
   }
+
+  navigateToWithExtra(path: string, dataObj: any) {
+    this.router.navigate([path], {
+      state:{
+        myComplexObject: dataObj
+       }
+     });
+  }
 }

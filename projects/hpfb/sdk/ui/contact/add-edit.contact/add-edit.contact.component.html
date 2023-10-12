@@ -87,10 +87,10 @@
                               [control]="contactFormLocalModel.controls['language']"
                               controlId="language" label="lang.correspond" parentId="contactDetails"
                               parentLabel="REP Contact"></control-messages> -->
-            <select id="language" required class="form-control" [formControl]="contactFormLocalModel.controls['language'] | formControl">
+            <!-- <select id="language" required class="form-control" [formControl]="contactFormLocalModel.controls['language'] | formControl">
               <option label=" " value=""></option>
               <option *ngFor="let option of languageList" [ngValue]="option.id"> {{option | textTransform: lang  }}</option>
-            </select>
+            </select> -->
           </label>
         </div>
         <div class="form-group col-sm-4">
@@ -180,5 +180,18 @@
         <!--</div>-->
       <!--</div>-->
       <!-- <pre>{{contactFormLocalModel.value |json}}</pre>-->
+
+      <div class="row">
+        <div class="btn-group-sm col-xs-12 text-left">
+          <button *ngIf="isExternalNewContact()" class="btn btn-primary" (click)="saveContactRecord()" >{{'save.contact'|translate}}</button>&nbsp;
+          <button *ngIf="isInternalActiveContact()" class="btn btn-default" (click)="activeContactRecord()" >{{'set.active.status'|translate}}</button>&nbsp;
+          <button *ngIf="isExternalNotNewContact()" class="btn btn-default" (click)="setStatusToRevise()" [disabled]="showErrorSummary()" >{{'set.revise.status'|translate}}</button>
+          <button *ngIf="isInternalDeleteContact()" class="btn btn-danger" (click)="deleteContactRecord()" >{{'remove.contact'|translate}}</button>&nbsp;
+          <button *ngIf="isExternalNotNewContact()" class="btn btn-default" (click)="setStatusToRemove()" [disabled]="showErrorSummary()" >{{'set.remove.status'|translate}}</button>
+          <button *ngIf="isExternalNewContact()" class="btn btn-danger" (click)="deleteContactRecord()" >{{'discard.record'|translate}}</button>
+          <span   *ngIf="!isInternal">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <button class="btn btn-default" (click)="revertContactRecord()" >{{'discard.changes'|translate}}</button>
+        </div>
+      </div>
     
 </form>

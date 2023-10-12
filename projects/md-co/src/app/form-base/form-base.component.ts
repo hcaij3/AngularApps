@@ -85,6 +85,10 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
     this.showMailToHelpText = false;
 
     this.xslName = XSLT_PREFIX.toUpperCase() + this._utilService.getApplicationMajorVersion(this._globalService.getAppVersion()) + '.xsl';
+
+    const data = router.getCurrentNavigation().extras.state['myComplexObject'];
+    console.log(data)
+    console.log(JSON.stringify(data))
   }
 
   ngOnInit() {  
