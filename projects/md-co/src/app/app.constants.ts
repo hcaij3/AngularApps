@@ -5,8 +5,10 @@ export const AMEND:string='AMEND';
 export const FINAL:string='FINAL';
 export const XSLT_PREFIX = 'REP_MDS_CO_';
 
-export const AMEND_OTHER_REASON_CODE = 'OTHER';   // this needs to match the OTHER code value in amendReasons.json
+// this needs to match the OTHER code value in amendReasons.json
+export const AMEND_OTHER_REASON_CODE = 'OTHER';  
 
+// this needs to match the code values in contactStatuses.json
 export enum ContactStatus {
     NEW,
     REVISE,

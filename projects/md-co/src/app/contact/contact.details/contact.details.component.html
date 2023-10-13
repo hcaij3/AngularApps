@@ -1,5 +1,6 @@
 <div>
   <div [formGroup]="contactFormLocalModel">
+    <ng-container *ngIf="editable">
     <div class="row">
       <div class="form-group col-sm-6" >
         <label for="contactId" [ngClass]="{'required':isInternal}" class="full-width">
@@ -53,11 +54,11 @@
         <label for="fullName" class="required full-width" aria-required="true">
           <span class="field-name" >{{'full.name'|translate}}</span>
           <strong class="required" >{{'commmon.required.bracket'|translate}}</strong>
-          <!-- <control-messages *ngIf="contactFormLocalModel.controls['fullName'].invalid"
+          <control-messages *ngIf="contactFormLocalModel.controls['fullName'].invalid"
                             [showError]="showFieldErrors"
-                            [control]="contactFormLocalModel.controls['fullName']"
+                            [control]="contactFormLocalModel.controls['fullName'] | formControl"
                             controlId="fullName" label="full.name" parentId="contactDetails"
-                            parentLabel="REP Contact"></control-messages> -->
+                            parentLabel="REP Contact"></control-messages>
           <input name="fullName" id="fullName" class="form-control full-width" maxlength="45" [formControl]="contactFormLocalModel.controls['fullName'] | formControl"/>
         </label>
       </div>
@@ -85,11 +86,11 @@
         <label for="language" class="required">
           <span class="field-name">{{'lang.correspond' |translate}}</span>
           <strong class="required" >{{'commmon.required.bracket'|translate}}</strong>
-          <!-- <control-messages *ngIf="contactFormLocalModel.controls['language'].invalid"
+          <control-messages *ngIf="contactFormLocalModel.controls['language'].invalid"
                             [showError]="showFieldErrors"
-                            [control]="contactFormLocalModel.controls['language']"
+                            [control]="contactFormLocalModel.controls['language'] | formControl"
                             controlId="language" label="lang.correspond" parentId="contactDetails"
-                            parentLabel="REP Contact"></control-messages> -->
+                            parentLabel="REP Contact"></control-messages>
           <select id="language" required class="form-control" [formControl]="contactFormLocalModel.controls['language'] | formControl">
             <option label=" " value=""></option>
             <option *ngFor="let option of languageList" [ngValue]="option.id"> {{option | textTransform: lang  }}</option>
@@ -183,5 +184,60 @@
       <!--</div>-->
     <!--</div>-->
     <!-- <pre>{{contactFormLocalModel.value |json}}</pre>-->
-  </div>
+  </ng-container>
+
+  <ng-container *ngIf="!editable">
+    <div class="row">
+      <div class="form-group col-sm-6" >
+          <strong>{{'contact.id'|translate}}</strong>
+          <p>{{ contactFormLocalModel.controls['contactId'].value }}</p>
+      </div>
+      <div class="form-group col-sm-6" >
+          <strong>{{'status' |translate}}</strong>
+          <p>{{contactFormLocalModel.controls['status'].value}}</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-sm-12" >
+          <strong>{{'full.name'|translate}}</strong>
+          <p>{{contactFormLocalModel.controls['fullName'].value}}</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-sm-6" >
+          <strong>{{'lang.correspond' |translate}}</strong>
+          <p>{{contactFormLocalModel.controls['language'].value}}</p>
+      </div>
+      <div class="form-group col-sm-4">
+          <strong>{{'job.title'|translate}}</strong>
+          <p>{{contactFormLocalModel.controls['jobTitle'].value}}</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-sm-4" >
+          <strong>{{'phone.number'|translate}}</strong>
+          <strong class="required" >{{'commmon.required.bracket'|translate}}</strong>
+          <p>{{contactFormLocalModel.controls['phoneNumber'].value}}</p>
+      </div>
+      <div class="form-group col-sm-3">
+          <strong>{{'phone.extension' |translate}}</strong>
+          <p>{{contactFormLocalModel.controls['phoneExtension'].value}}</p>
+      </div>
+      <div class="form-group col-sm-4 ">
+          <strong>{{'fax.number' |translate}}</strong>
+          <p>{{contactFormLocalModel.controls['faxNumber'].value}}</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-sm-6" >
+          <strong>{{'contact.email'|translate}}</strong>
+          <p>{{contactFormLocalModel.controls['email'].value}}</p>
+      </div>
+      <div class="form-group col-sm-6" >
+          <strong>{{'routing.id' |translate}}</strong>
+          <p>{{contactFormLocalModel.controls['routingId'].value}}</p>
+      </div>
+    </div>
+  </ng-container>
+</div>
 </div>

@@ -3,11 +3,8 @@ import {
   AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation
 } from '@angular/core';
 import {FormGroup, FormBuilder} from '@angular/forms';
-import { ControlMessagesComponent } from '../../error-msg/control-messages/control-messages.component';
+import { ControlMessagesComponent, ErrorSummaryComponent, ICode, LoggerService, UtilsService } from '@hpfb/sdk/ui';
 import {ContactDetailsService} from './contact.details.service';
-import {isArray} from 'util';
-import { ICode } from '../../data-loader/data';
-
 
 @Component({
   selector: 'contact-details',
@@ -29,6 +26,8 @@ export class ContactDetailsComponent implements OnInit, OnChanges, AfterViewInit
   @Input() contactStatusList: ICode[];
   @Input() lang;
   @Input() helpTextSequences;
+  @Input() editable: boolean;
+
   @Output() errorList = new EventEmitter(true);
   @ViewChildren(ControlMessagesComponent) msgList: QueryList<ControlMessagesComponent>;
 
@@ -38,7 +37,8 @@ export class ContactDetailsComponent implements OnInit, OnChanges, AfterViewInit
   public showFieldErrors: boolean = false;
   private detailsService: ContactDetailsService;
 
-  constructor(private _fb: FormBuilder, private cdr: ChangeDetectorRef) {
+  constructor(private _fb: FormBuilder, private cdr: ChangeDetectorRef,
+    private _utilService: UtilsService, private _loggerService: LoggerService) {
     this.showFieldErrors = false;
     this.showErrors = false;
     this.detailsService = new ContactDetailsService();
@@ -47,10 +47,11 @@ export class ContactDetailsComponent implements OnInit, OnChanges, AfterViewInit
 
   ngOnInit() {
     if (!this.contactFormLocalModel) {
+      this._loggerService.log("contact.detail", "ngOnInit", 'create contactFormLocalModel');
       this.contactFormLocalModel = ContactDetailsService.getReactiveModel(this._fb, this.isInternal);
     }
     this.detailsChanged = 0;
-    ContactDetailsService.setLang(this.lang);
+    // ContactDetailsService.setLang(this.lang);
   }
 
   ngAfterViewInit() {

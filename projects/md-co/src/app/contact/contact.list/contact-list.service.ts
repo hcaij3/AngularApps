@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {CompanyContactRecordService} from '../company-contact-record/company-contact-record.service';
-import { IListable } from '../../list/listable';
-
 import {ContactDetailsService} from '../contact.details/contact.details.service';
-import { ListService } from '../../list/list-service';
+import { IListable, ListService } from '@hpfb/sdk/ui';
+
 
 @Injectable()
 export class ContactListService extends ListService implements IListable {

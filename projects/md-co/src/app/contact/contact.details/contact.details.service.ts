@@ -1,24 +1,11 @@
 import {AfterViewInit, Injectable, OnChanges, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import { UtilsService} from '../../utils/utils.service';
-import { ValidationService } from '../../validation/validation.service';
-import { ListService } from '../../list/list-service';
-import { ENGLISH } from '../../common.constants';
+import { UtilsService, ValidationService, ENGLISH } from '@hpfb/sdk/ui';
 
 @Injectable()
 export class ContactDetailsService {
 
-  private static lang = ENGLISH;    //todo get lang 
-
   constructor() {
-  }
-
-  /**
-   * Sets language variable
-   *
-   */
-  public static setLang(lang) {
-    ContactDetailsService.lang = lang;
   }
 
   /**

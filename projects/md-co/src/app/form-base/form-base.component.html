@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <form name="companyForm" [formGroup]="companyForm" novalidate>
+  <form name="companyForm" [formGroup]="companyForm" novalidate *ngIf="!toggle">
       <div class="row mrgn-tp-md">
         <div class="col-md-12">
           <div class="text-right">
@@ -87,7 +87,7 @@
                                  [helpTextSequences]="helpIndex" [xmlStatus]="genInfoModel.status"
                                  [showErrors]="showErrors" [contactModel]="contactModel"
                                  [languageList]="languageList" [contactStatusList]="contactStatusList"
-                                 (contactsUpdated)="contactModelUpdated($event)"></contact-list>
+                                 (contactsUpdated)="contactModelUpdated($event)" (toggleContactCL)="toggleRendering($event)"></contact-list>
                 </div>
               </section>
               </div>
@@ -177,4 +177,24 @@
     <pre> companyForm {{companyForm.value |json}}</pre>
 
     </form>
+    <!-- =========================================================================== -->
+    <div *ngIf="toggle">
+      <company-contact-record [editable]=true [myId]="myId" [contactModel]="contactModel"
+        [isInternal]="isInternal" [languageList]="languageList"  [contactStatusList]="contactStatusList" [lang]="lang"
+        [helpTextSequences]="helpTextSequences"
+        [newRecord]=true
+        [showErrors]="showErrors"
+		    (contactsUpdated)="contactModelUpdated($event)"  (toggleContactCR)="toggleRendering($event)" 
+        ></company-contact-record>
+      <!--       <company-contact-record
+        [detailsChanged]="updateContactDetails" [isInternal]="isInternal" [languageList]="languageList" [contactStatusList]="contactStatusList"
+        [showErrors]="showErrors" [lang]="lang"
+        [newRecord]="newRecordIndicator"
+        [hasRecords]="dataModel.length > 0"
+        [isListVilad]="validRec"
+        [helpTextSequences]="helpTextSequences"
+        (saveRecord)="saveContactRecord($event)"
+        (errors)="updateErrorList($event)"
+        (revertRecord)="revertContact($event)" (deleteRecord)="deleteContact($event)"></company-contact-record> -->
+    </div>
   </div>

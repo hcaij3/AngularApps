@@ -7,9 +7,11 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {ContactDetailsComponent} from '../contact.details/contact.details.component';
 import {ContactDetailsService} from '../contact.details/contact.details.service';
 import {CompanyContactRecordService} from './company-contact-record.service';
-import {ErrorSummaryComponent} from '../../error-msg/error-summary/error-summary.component';
-import { ControlMessagesComponent } from '../../error-msg/control-messages/control-messages.component';
-import { ICode } from '../../data-loader/data';
+import { ControlMessagesComponent, ErrorSummaryComponent, ICode, LoggerService, UtilsService } from '@hpfb/sdk/ui';
+import { GlobalService } from '../../global/global.service';
+import { Contact, Enrollment } from '../../models/Enrollment';
+import { ContactService } from './contact.service';
+import { ToggleArgs } from '../../global/toggleArgs';
 
 @Component({
   selector: 'company-contact-record',
@@ -34,12 +36,18 @@ export class CompanyContactRecordComponent implements OnInit, AfterViewInit {
   @Input() isListVilad: boolean;
   @Input() lang;
   @Input() helpTextSequences;
+  @Input() editable: boolean;
+  @Input() myId: number;
   @Output() saveRecord = new EventEmitter();
   @Output() revertRecord = new EventEmitter();
   @Output() deleteRecord = new EventEmitter();
   @Output() errors = new EventEmitter();
   @Output() createRecord; // TODO don't know if needed
 
+  // this group of fields are only used for showing "Contact Page"
+  @Input() public contactModel = [];
+  @Output() public contactsUpdated = new EventEmitter();
+  @Output() toggleContactCR = new EventEmitter<ToggleArgs>();
 
   @ViewChild(ContactDetailsComponent, {static: true}) contactDetailsChild;
   @ViewChildren(ErrorSummaryComponent) errorSummaryChildList: QueryList<ErrorSummaryComponent>;
@@ -55,7 +63,8 @@ export class CompanyContactRecordComponent implements OnInit, AfterViewInit {
   public errorSummaryChild: ErrorSummaryComponent = null;
   public headingLevel = 'h4';
 
-  constructor(private _fb: FormBuilder,  private cdr: ChangeDetectorRef) {
+  constructor(private _fb: FormBuilder,  private cdr: ChangeDetectorRef, private _contactService: ContactService,
+    private _utilService: UtilsService, private _loggerService: LoggerService, private _globalService: GlobalService) {
     this.showErrors = false;
     this.showErrSummary = false;
     this.hasRecords = true;
@@ -64,6 +73,7 @@ export class CompanyContactRecordComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     if (!this.contactRecordModel) {
       this.contactRecordModel = this._initContact();
+      this._loggerService.log("company.contact.record", "ngOnInit", 'create contactRecordModel', this.contactRecordModel);
     }
     this.detailsChanged = 0;
   }
@@ -114,7 +124,7 @@ export class CompanyContactRecordComponent implements OnInit, AfterViewInit {
   }
 
   ngOnChanges (changes: SimpleChanges) {
-
+    this._loggerService.log("company.contact.record", "ngOnChanges", JSON.stringify(this._utilService.checkComponentChanges(changes), null, 2));
     if (changes['detailsChanged']) { // used as a change indicator for the model
       if (this.contactFormRecord) {
         this.setToLocalModel();
@@ -127,8 +137,26 @@ export class CompanyContactRecordComponent implements OnInit, AfterViewInit {
       this.updateChild++;
     }
     if (changes['newRecord']) {
-      this.isNew = changes['newRecord'].currentValue;
+      this.isNew = changes['newRecord'].currentValue; 
     }
+    if (changes['editable']) {
+      this.contactRecordModel = CompanyContactRecordService.getReactiveModel(this._fb, this.isInternal);
+    }
+    if (changes['myId']) {
+      const tId = changes['myId'].currentValue;
+      console.log("==========="+tId + typeof tId)
+      let enroll: Enrollment = this._globalService.getEnrollment();
+      if (enroll) {
+          let contacts : Contact[] = enroll.DEVICE_COMPANY_ENROL.contacts['contact'] || []; // default to an empty array
+          for (const contact of contacts) {
+            console.log(typeof contact.id);
+            if (tId=== Number(contact.id)) {
+              console.log(JSON.stringify(contact));
+            }
+          }
+        }
+    }
+    
     // if (this.isInternal) {
       if (changes['showErrors']) {
         this.showErrSummary = changes['showErrors'].currentValue;
@@ -187,9 +215,16 @@ export class CompanyContactRecordComponent implements OnInit, AfterViewInit {
    * Deletes the contact reocord with the selected id from both the model and the form
    */
   public deleteContactRecord(): void {
-    this.errorSummaryChild = null;
-    this.deleteRecord.emit(this.contactRecordModel.value.id);
-    this._emitErrors();
+    if (this.isNew){
+      this._loggerService.log('contact.record', 'deleteContactRecord', 'isNew', 'true')
+      this.errorSummaryChild = null;
+      this.toggleContactCR.emit({toggleFlag: false, action: 'delete'});
+    } else {
+      this._loggerService.log('contact.record', 'deleteContactRecord', 'this.contactRecordModel.value.id', this.contactRecordModel.value.id)
+      this.errorSummaryChild = null;
+      this.deleteRecord.emit(this.contactRecordModel.value.id);
+      this._emitErrors();
+    }
   }
   /***
    * Deletes the contact reocord with the selected id from both the model and the form
@@ -246,6 +281,61 @@ export class CompanyContactRecordComponent implements OnInit, AfterViewInit {
       }
     }
   }
+  
+  public saveContactRecord2(): void {
+    this._loggerService.log("contact.record", 'saveContactRecord2', 'this.contactModel.length', this.contactModel.length);
+    if (this.contactRecordModel.valid) {
+      // convert form data to output object
+      const contactDetailsFormGroup = this.contactRecordModel.get('contactDetails') as FormGroup;
+      let newOutputContactRec = this._contactService.mapContactDetailsFormModelToOutputDataModel(contactDetailsFormGroup, this.lang, this.languageList, this.contactStatusList);
+
+      // let enroll: Enrollment = this._globalService.getEnrollment();
+      // if (enroll) {
+      //   let contacts : Contact[] = enroll.DEVICE_COMPANY_ENROL.contacts['contact'] || []; // default to an empty array
+      //   // if this is a new record 
+      //   if (this.isNew) {
+      //     const nextId = this._contactService.getNextId(contacts);
+      //     newOutputContactRec.id = nextId;
+      //     contacts.push(newOutputContactRec);
+
+      //     console.log(contacts.length)
+      //     console.log(enroll.DEVICE_COMPANY_ENROL.contacts['contact'].length)
+        // } else {
+        //   // ????
+        // }
+      // }
+      this.contactsUpdated.emit(this.contactModel)
+      this.toggleContactCR.emit({toggleFlag: false, action: 'add'});
+
+      // if updating existing record
+
+      //     if (!this.contactRecord) {
+      //       // this is a new contact record
+      //       const nextId = this._listService.getNextId(contacts);
+      //       newContactRec.id = nextId;
+      //     }
+      //     console.log(JSON.stringify(newContactRec));
+      //     contacts.push(newContactRec);
+        
+      } else {
+        // id is used for an error to ensure the record gets saved
+        let temp = this.contactRecordModel.value.id;
+        this.contactRecordModel.controls['id'].setValue(1);
+        if (this.contactRecordModel.valid) {
+          this.contactRecordModel.controls['id'].setValue(temp);
+          this.saveRecord.emit((this.contactRecordModel));
+        } else {
+          this.contactRecordModel.controls['id'].setValue(temp);
+          this.showErrSummary = true;
+          this.showErrors = true;
+        }
+      }
+    }
+
+  onEditClick(id: any){
+    this.toggleContactCR.emit({toggleFlag: true, action: 'update', recordId: id});
+  }
+
 
   /**
    * Changes the local model back to the last saved version of the contact

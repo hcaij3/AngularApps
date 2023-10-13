@@ -11,6 +11,7 @@ import { ControlMessagesComponent, FileConversionService, INameAddress, LoggerSe
 import { NavigationEnd, Router } from '@angular/router';
 import { GlobalService } from '../global/global.service';
 import { ContactListComponent } from '../contact/contact.list/contact.list.component';
+import { ToggleArgs } from '../global/toggleArgs';
 
 @Component({
   selector: 'app-form-base',
@@ -66,6 +67,9 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   public hasContact = false;
 
   public showAmendNote: boolean = false;
+
+  public toggle: boolean = false;
+  public myId: number = -1;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -142,7 +146,7 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this._loggerService.log("form.base", "ngOnChanges", this._utilService.checkComponentChanges(changes));
+    this._loggerService.log("form.base", "ngOnChanges", JSON.stringify(this._utilService.checkComponentChanges(changes), null, 2));
     if (changes['contactModel']) {
       this._loggerService.log("form.base", "ngOnChanges", "contactModel");
       this._updateContactList(changes['primContactModel'].currentValue);
@@ -224,8 +228,9 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
 
   // disable the mailto link for internal, or when it is external Final or when there are errors for the external
   public disableMailtoLink() {
-    return (this.isInternal || this.genInfoModel.status === FINAL ||
-      (this.errorList && this.errorList.length > 0) || !this.companyContacts.contactListForm.pristine);
+    return true;    //todo
+    // return (this.isInternal || this.genInfoModel.status === FINAL ||
+    //   (this.errorList && this.errorList.length > 0) || !this.companyContacts.contactListForm.pristine);
   }
 
   public saveXmlFile() {
@@ -408,6 +413,7 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   }
 
   contactModelUpdated(contacts) {
+    this._loggerService.log('form.base', 'contactModelUpdated', contacts.length)
     const cntList = contacts.filter(contact =>
       (contact.status._id === ContactStatus.NEW || contact.status._id === ContactStatus.REVISE || contact.status._id === ContactStatus.ACTIVE));
     this.activeContacts = [];
@@ -463,6 +469,12 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
     }
 
     this.showAmendNote = ( this.genInfoModel.status === FINAL);
+  }
+
+  toggleRendering(args: ToggleArgs) {
+    this._loggerService.log('form.base', 'toggleRendering', JSON.stringify(args))
+    this.toggle = args.toggleFlag;
+    this.myId = args.recordId;
   }
 
 }

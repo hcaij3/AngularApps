@@ -3,15 +3,12 @@ import {
   AfterViewInit, DoCheck, ViewEncapsulation
 } from '@angular/core';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
-
-import {ErrorSummaryComponent} from '../../error-msg/error-summary/error-summary.component';
 import {CompanyContactRecordComponent} from '../company-contact-record/company-contact-record.component';
 import {CompanyContactRecordService} from '../company-contact-record/company-contact-record.service';
 import {ContactListService} from './contact-list.service';
-import { ListBaseComponent } from '../../list/list-base.component';
 import {TranslateService} from '@ngx-translate/core';
-import { errorSummClassName } from '../../common.constants';
-import { ICode } from '../../data-loader/data';
+import { ErrorSummaryComponent, ICode, ListBaseComponent, LoggerService, UtilsService, errorSummClassName } from '@hpfb/sdk/ui';
+import { ToggleArgs } from '../../global/toggleArgs';
 
 //  import {ExpanderComponent} from '../../common/expander/expander.component';
 @Component({
@@ -34,6 +31,7 @@ export class ContactListComponent extends ListBaseComponent implements OnInit, O
   @Input() helpTextSequences;
   @Output() public errors = new EventEmitter();
   @Output() public contactsUpdated = new EventEmitter();
+  @Output() toggleContactCL = new EventEmitter<ToggleArgs>();
 
   @ViewChild(CompanyContactRecordComponent, {static: true}) companyContactChild: CompanyContactRecordComponent;
   @ViewChildren(ErrorSummaryComponent) errorSummaryChildList: QueryList<ErrorSummaryComponent>;
@@ -77,7 +75,8 @@ export class ContactListComponent extends ListBaseComponent implements OnInit, O
     }
   ];
 
-  constructor(private _fb: FormBuilder, private translate: TranslateService) {
+  constructor(private _fb: FormBuilder, private translate: TranslateService, 
+    private _utilService: UtilsService, private _loggerService: LoggerService) {
     super();
     this.service = new ContactListService();
     this.dataModel = this.service.getModelRecordList();
@@ -152,6 +151,7 @@ export class ContactListComponent extends ListBaseComponent implements OnInit, O
    * @param {SimpleChanges} changes
    */
   ngOnChanges(changes: SimpleChanges) {
+    this._loggerService.log("company.list", "ngOnChanges", JSON.stringify(this._utilService.checkComponentChanges(changes), null, 2));
     if (changes['loadFileIndicator'] && !changes['loadFileIndicator'].firstChange) {
       this.newRecordIndicator = false;
       this._deleteContactInternal(0);
@@ -259,6 +259,7 @@ export class ContactListComponent extends ListBaseComponent implements OnInit, O
    * @param record
    */
   public saveContactRecord(record: FormGroup) {
+    this._loggerService.log('contact.list', 'saveContactRecord', record)
     this.saveRecord(record, this.service);
     this.dataModel = this.service.getModelRecordList();
     this.addRecordMsg++;
@@ -367,6 +368,7 @@ export class ContactListComponent extends ListBaseComponent implements OnInit, O
    * @param id
    */
   public deleteContact(id): void {
+    this._loggerService.log('contact.list', 'deleteContact', 'id', id)
     this._deleteContactInternal(id);
     document.location.href = '#addContactBtn';
     this.contactsUpdated.emit(this.dataModel);
@@ -403,4 +405,13 @@ export class ContactListComponent extends ListBaseComponent implements OnInit, O
 
     return true;
   }
+
+  public renderContactForm1() {
+    this.toggleContactCL.emit({toggleFlag: true, action: 'new'});
+  }
+
+  public renderContactForm2(id) {
+    this.toggleContactCL.emit({toggleFlag: true, action: 'update'});
+  }
+
 }
