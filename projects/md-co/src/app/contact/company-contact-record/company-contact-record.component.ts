@@ -12,6 +12,7 @@ import { GlobalService } from '../../global/global.service';
 import { Contact, Enrollment } from '../../models/Enrollment';
 import { ContactService } from './contact.service';
 import { ToggleArgs } from '../../global/toggleArgs';
+import { CONT_STATUS_NEW, CONT_STATUS_REMOVE } from '../../app.constants';
 
 @Component({
   selector: 'company-contact-record',
@@ -289,6 +290,9 @@ export class CompanyContactRecordComponent implements OnInit, AfterViewInit {
       const contactDetailsFormGroup = this.contactRecordModel.get('contactDetails') as FormGroup;
       let newOutputContactRec = this._contactService.mapContactDetailsFormModelToOutputDataModel(contactDetailsFormGroup, this.lang, this.languageList, this.contactStatusList);
 
+      const nextId = this._contactService.getNextId(this.contactModel);
+      newOutputContactRec.id = nextId;
+      this.contactModel.push(newOutputContactRec);
       // let enroll: Enrollment = this._globalService.getEnrollment();
       // if (enroll) {
       //   let contacts : Contact[] = enroll.DEVICE_COMPANY_ENROL.contacts['contact'] || []; // default to an empty array
@@ -349,7 +353,7 @@ export class CompanyContactRecordComponent implements OnInit, AfterViewInit {
    */
   public isExternalNotNewContact(): boolean {
     const conRecord = <FormGroup>this.contactRecordModel.controls['contactDetails'];
-    return (!this.isInternal && conRecord.controls['status'].value != 'NEW');
+    return (!this.isInternal && conRecord.controls['status'].value != CONT_STATUS_NEW);
   }
 
   /**
@@ -357,21 +361,21 @@ export class CompanyContactRecordComponent implements OnInit, AfterViewInit {
    */
   public isInternalActiveContact(): boolean {
     const conRecord = <FormGroup>this.contactRecordModel.controls['contactDetails'];
-    return (this.isInternal && conRecord.controls['status'].value != 'REMOVE');
+    return (this.isInternal && conRecord.controls['status'].value != CONT_STATUS_REMOVE);
   }
 
   /**
    * External site show delete contact button
    */
   public isExternalNewContact(): boolean {
-    return (!this.isInternal && (<FormGroup>this.contactRecordModel.controls['contactDetails']).controls['status'].value == 'NEW');
+    return (!this.isInternal && (<FormGroup>this.contactRecordModel.controls['contactDetails']).controls['status'].value == CONT_STATUS_NEW);
   }
 
   /**
    * Internal site show delete contact button
    */
   public isInternalDeleteContact(): boolean {
-    return (this.isInternal && (<FormGroup>this.contactRecordModel.controls['contactDetails']).controls['status'].value == 'REMOVE');
+    return (this.isInternal && (<FormGroup>this.contactRecordModel.controls['contactDetails']).controls['status'].value == CONT_STATUS_REMOVE);
   }
 
   get contactDetailsFormGroup() {

@@ -1,6 +1,7 @@
 import {AfterViewInit, Injectable, OnChanges, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { UtilsService, ValidationService, ENGLISH } from '@hpfb/sdk/ui';
+import { CONT_STATUS_NEW } from '../../app.constants';
 
 @Injectable()
 export class ContactDetailsService {
@@ -19,7 +20,7 @@ export class ContactDetailsService {
     // const recordProcessedValidator = isInternal ? [Validators.required] : [];
     return fb.group({
       contactId: [null, contactIdValidators],
-      status: 'NEW',
+      status: CONT_STATUS_NEW,
       // hcStatus: [null, Validators.required],
       // salutation: [null, Validators.required],
       fullName: [null, Validators.required],
@@ -63,7 +64,9 @@ export class ContactDetailsService {
     );
   }
 
-
+   /**
+   * @deprecated Use ContactService mapContactDetailsFormModelToOutputDataModel() instead.
+   */
   public static mapFormModelToDataModel(formRecord: FormGroup, contactModel) {
     contactModel.contact_id = formRecord.controls['contactId'].value;
     if (formRecord.controls['status'].value) {

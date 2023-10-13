@@ -76,7 +76,7 @@ export class ContactListService extends ListService implements IListable {
     return (record);
   }
 
-  public saveRecord(record: FormGroup) {
+  public saveRecord(record: FormGroup) { 
     if (record.controls['isNew'].value) {
       // this.setRecordId(record, this.getNextIndex());
       record.controls['isNew'].setValue(false);

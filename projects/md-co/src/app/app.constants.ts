@@ -9,12 +9,10 @@ export const XSLT_PREFIX = 'REP_MDS_CO_';
 export const AMEND_OTHER_REASON_CODE = 'OTHER';  
 
 // this needs to match the code values in contactStatuses.json
-export enum ContactStatus {
-    NEW,
-    REVISE,
-    REMOVE,
-    ACTIVE
-  } 
+export const CONT_STATUS_NEW = 'NEW';
+export const CONT_STATUS_REVISE = 'REVISE';
+export const CONT_STATUS_REMOVE = 'REMOVE'
+export const CONT_STATUS_ACTIVE = 'ACTIVE';
 
 // export enum EnrollmentStatus {
 //     NEW = 'fr_NEW',

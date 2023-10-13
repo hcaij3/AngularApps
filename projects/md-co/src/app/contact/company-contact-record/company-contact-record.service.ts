@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ContactDetailsService} from '../contact.details/contact.details.service';
+import { ContactService } from './contact.service';
 
 @Injectable()
 export class CompanyContactRecordService {
 
-  constructor() {
+  constructor(private _contactService: ContactService) {
   }
 
   public static getReactiveModel(fb: FormBuilder, isInternal): FormGroup {

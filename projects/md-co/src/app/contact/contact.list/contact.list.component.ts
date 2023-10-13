@@ -164,7 +164,7 @@ export class ContactListComponent extends ListBaseComponent implements OnInit, O
       this.service.initIndex(changes['contactModel'].currentValue);
       this.dataModel = this.service.getModelRecordList();
       // this.contactListForm.controls['contacts'] = this._fb.array([]);
-      this.service.createFormDataList(this.dataModel, this._fb, this.contactListForm.controls['contacts'], this.isInternal);
+      this.service.createFormDataList(this.dataModel, this._fb, this.contactListForm.controls['contacts'], this.isInternal); 
       this.validRec = true;
     }
 

@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import { ConvertResults } from '@hpfb/sdk/ui/file-io/convert-results';
 import { ICode, IKeyword } from '@hpfb/sdk/ui/data-loader/data';
-import { AMEND, ContactStatus, FINAL, XSLT_PREFIX, ROOT_TAG } from '../app.constants';
+import { ROOT_TAG, AMEND, FINAL, XSLT_PREFIX,  CONT_STATUS_NEW, CONT_STATUS_REVISE, CONT_STATUS_ACTIVE } from '../app.constants';
 import { CompanyDataLoaderService } from './company-data-loader.service';
 import { CompanyBaseService } from './company-base.service';
 import { GeneralInformation, Contact, PrimaryContact, AdministrativeChanges, Enrollment, DeviceCompanyEnrol} from '../models/Enrollment';
@@ -142,7 +142,6 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     document.location.href = '#def-top';
-    document.location.href = '#main';
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -153,12 +152,13 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // todo is this used? if yes, consolidate with contactModelUpdated for checking activeContacts??
   private _updateContactList(contacts) {
     this.activeContacts = contacts.filter(
       (contact) =>
-        contact[status] === 'NEW' ||
-        contact[status] === 'REVISE' ||
-        contact[status] === 'ACTIVE'
+        contact[status] === CONT_STATUS_NEW ||
+        contact[status] === CONT_STATUS_REVISE ||
+        contact[status] === CONT_STATUS_ACTIVE
     );
     this.hasContact = this.activeContacts && this.activeContacts.length > 0;
   }
@@ -415,7 +415,7 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   contactModelUpdated(contacts) {
     this._loggerService.log('form.base', 'contactModelUpdated', contacts.length)
     const cntList = contacts.filter(contact =>
-      (contact.status._id === ContactStatus.NEW || contact.status._id === ContactStatus.REVISE || contact.status._id === ContactStatus.ACTIVE));
+      (contact.status._id === CONT_STATUS_NEW || contact.status._id === CONT_STATUS_REVISE || contact.status._id === CONT_STATUS_ACTIVE));
     this.activeContacts = [];
     if (cntList) {
       cntList.forEach((contact: any) => {
@@ -474,6 +474,9 @@ export class FormBaseComponent implements OnInit, AfterViewInit {
   toggleRendering(args: ToggleArgs) {
     this._loggerService.log('form.base', 'toggleRendering', JSON.stringify(args))
     this.toggle = args.toggleFlag;
+    if (this.toggle) {
+          document.location.href = '#contact-form-top';
+    }
     this.myId = args.recordId;
   }
 
