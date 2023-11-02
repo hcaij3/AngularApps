@@ -3,6 +3,9 @@ export const DATA_PATH: string = './assets/data/';
 export const NEW:string='NEW';
 export const AMEND:string='AMEND';
 export const FINAL:string='FINAL';
+export const REVISE:string='REVISE';
+export const ACTIVE:string='ACTIVE';
+export const REMOVE:string='REMOVE';
 export const XSLT_PREFIX = 'REP_MDS_CO_';
 
 // this needs to match the OTHER code value in amendReasons.json
@@ -14,6 +17,13 @@ export const CONT_STATUS_REVISE = 'REVISE';
 export const CONT_STATUS_REMOVE = 'REMOVE'
 export const CONT_STATUS_ACTIVE = 'ACTIVE';
 
+// todo only keep one of the contact status list
+export const ContactStatus = {
+  NEW,
+  REVISE,
+  REMOVE,
+  ACTIVE
+} 
 // export enum EnrollmentStatus {
 //     NEW = 'fr_NEW',
 //     AMEND = 'fr_AMEND',
@@ -22,6 +32,7 @@ export const CONT_STATUS_ACTIVE = 'ACTIVE';
 
 export const helpInstructionHeadings = ['loadFileIndx',
                                         'compREPInx',
+                                        'rationaleInx',
                                         'conStatInx',
                                         'routIdInx',
                                         'desRenewalInx',
