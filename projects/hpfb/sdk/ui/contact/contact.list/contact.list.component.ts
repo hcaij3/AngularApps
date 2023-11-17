@@ -11,6 +11,7 @@ import {TranslateService} from '@ngx-translate/core';
 import { ErrorSummaryComponent } from '../../error-msg/error-summary/error-summary.component';
 import { errorSummClassName } from '../../common.constants';
 import { ICode } from '../../data-loader/data';
+import { UtilsService } from '../../utils/utils.service';
 
 //  import {ExpanderComponent} from '../../common/expander/expander.component';
 @Component({
@@ -49,9 +50,10 @@ export class ContactListComponent extends RecordListBaseComponent implements OnI
   public dataModel = [];
   public validRec = true;
   
-  constructor(private _fb: FormBuilder, private translate: TranslateService, private _listService: ContactListService, private _recordService: CompanyContactRecordService) {
+  constructor(private _fb: FormBuilder, private translate: TranslateService, private _utilsService: UtilsService, 
+    private _listService: ContactListService, private _recordService: CompanyContactRecordService) {
     super();
-    this.dataModel = this._listService.getModelRecordList();
+    // this.dataModel = this._listService.getModelRecordList();
     this.translate.get('error.msg.required').subscribe(res => {
       // console.log(res);
     });
@@ -60,8 +62,12 @@ export class ContactListComponent extends RecordListBaseComponent implements OnI
     });
   }
 
+  get contactFormList(): FormArray {
+    return <FormArray>(this.contactListForm.controls['contacts']);
+  }
+
   ngOnInit() {
-    // console.log('this.isInterannnnnl: ' + this.isInternal);
+    this.initDataModel(this.contactModel);
   }
 
   ngAfterViewInit() {
@@ -123,6 +129,11 @@ export class ContactListComponent extends RecordListBaseComponent implements OnI
    * @param {SimpleChanges} changes
    */
   ngOnChanges(changes: SimpleChanges) {
+    const isFirstChange = this._utilsService.isFirstChange(changes);
+
+    // Ignore first trigger of ngOnChanges
+    if (!isFirstChange) {
+
     if (changes['loadFileIndicator'] && !changes['loadFileIndicator'].firstChange) {
       this.newRecordIndicator = false;
       this._deleteContactInternal(0);
@@ -131,19 +142,34 @@ export class ContactListComponent extends RecordListBaseComponent implements OnI
       this.saveContactRecord(changes['saveContact'].currentValue);
     }
     if (changes['contactModel']) {
-      this._listService.setModelRecordList(changes['contactModel'].currentValue);
-      this._listService.initIndex(changes['contactModel'].currentValue);
-      this.dataModel = this._listService.getModelRecordList();
-      // this.contactListForm.controls['contacts'] = this._fb.array([]);
-      this._listService.createFormDataList(this.dataModel, this._fb, this.contactListForm.controls['contacts'], this.isInternal);
+      // this._listService.setModelRecordList(changes['contactModel'].currentValue);
+      // this._listService.initIndex(changes['contactModel'].currentValue);
+      // this.dataModel = this._listService.getModelRecordList();
+      // // this.contactListForm.controls['contacts'] = this._fb.array([]);
+      // this._listService.createFormDataList(this.dataModel, this._fb, this.contactListForm.controls['contacts'], this.isInternal);
+      this.initDataModel(changes['contactModel'].currentValue);
       this.validRec = true;
     }
 
-    if (changes['isInternal']) {
-      if (!this.isInternal && (!this.contactModel || this.contactModel.length === 0)) {
-        this.addContactInit();
-        this.showErrors = false;
-      }
+    // if (changes['isInternal']) {
+    //   if (!this.isInternal && (!this.contactModel || this.contactModel.length === 0)) {
+    //     this.addContactInit();
+    //     this.showErrors = false;
+    //   }
+    // }
+  }
+  }
+
+  private initDataModel(tContactModel){
+    this._listService.setModelRecordList(tContactModel);
+    this._listService.initIndex(tContactModel);
+    this.dataModel = this._listService.getModelRecordList();
+    // this.contactListForm.controls['contacts'] = this._fb.array([]);
+    if (!this.isInternal && (!this.contactModel || this.contactModel.length === 0)) {
+      this.addContactInit();
+      this.showErrors = false;
+    } else {
+      this._listService.createFormDataList(this.dataModel, this._fb, this.contactListForm.controls['contacts'], this.isInternal);
     }
   }
 
@@ -186,17 +212,17 @@ export class ContactListComponent extends RecordListBaseComponent implements OnI
     // add contact to the list
     // console.log('adding an contact');
     // 1. Get the list of reactive form Records
-    let contactFormList = <FormArray>this.contactListForm.controls['contacts'];
+    // let contactFormList = <FormArray>this.contactListForm.controls['contacts'];
     // console.log(contactFormList);
     // 2. Get a blank Form Model for the new record
     let formContact = this._recordService.getReactiveModel(this._fb, this.isInternal);
     // 3. set record id
     this._listService.setRecordId(formContact, this._listService.getNextIndex());
     // 4. Add the form record using the super class. New form is addded at the end
-    this.addRecord(formContact, contactFormList);
+    this.addRecord(formContact, this.contactFormList);
     // console.log(contactFormList);
     // 5. Set the new form to the new contact form reference.
-    this.newContactForm = <FormGroup> contactFormList.controls[contactFormList.length - 1];
+    this.newContactForm = <FormGroup> this.contactFormList.controls[this.contactFormList.length - 1];
   }
 
   /**

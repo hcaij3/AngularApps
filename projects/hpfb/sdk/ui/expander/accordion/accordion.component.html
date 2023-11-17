@@ -1,0 +1,11 @@
+<ul class="list-unstyled">
+  <li *ngFor="let contactRow of ttformArray.controls; let i=index">
+    <details [attr.open]="newRecord? '' : null">
+      <summary>{{accordionHeadingMsgKey | translate}}&nbsp; {{contactRow.get('id').value}}</summary>
+      <ng-container *ngTemplateOutlet="tmplRef; context: {$implicit: contactRow}">
+    </ng-container>
+    </details>
+  </li>
+</ul>
+
+

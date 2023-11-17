@@ -3,21 +3,21 @@
   <lib-error-summary *ngIf="showErrorSummary()" [hiddenSummary]="showErrorSummary()"
                  [errorList]="errorList" headingPreamble="heading.contactRecord"
                  [headingLevel]="headingLevel" label="Company Representative Record(s)" compId="contactRec"></lib-error-summary>
-  <contact-details [showErrors]="showErrors" [isInternal]="isInternal" [lang]="lang"
+  <contact-details [ttcontactRow]="cRRow" [showErrors]="showErrors" [isInternal]="isInternal" [lang]="lang"
                    [detailsChanged]="updateChild" [group]="contactDetailsFormGroup"
                    [helpTextSequences]="helpTextSequences"
                    (errorList)="updateErrorList($event)"></contact-details>
 
   <div class="row">
     <div class="btn-group-sm col-xs-12 text-left">
-      <button *ngIf="isExternalNewContact()" class="btn btn-primary" (click)="saveContactRecord()" >{{'save.contact'|translate}}</button>&nbsp;
-      <button *ngIf="isInternalActiveContact()" class="btn btn-default" (click)="activeContactRecord()" >{{'set.active.status'|translate}}</button>&nbsp;
-      <button *ngIf="isExternalNotNewContact()" class="btn btn-default" (click)="setStatusToRevise()" [disabled]="showErrorSummary()" >{{'set.revise.status'|translate}}</button>
-      <button *ngIf="isInternalDeleteContact()" class="btn btn-danger" (click)="deleteContactRecord()" >{{'remove.contact'|translate}}</button>&nbsp;
-      <button *ngIf="isExternalNotNewContact()" class="btn btn-default" (click)="setStatusToRemove()" [disabled]="showErrorSummary()" >{{'set.remove.status'|translate}}</button>
-      <button *ngIf="isExternalNewContact()" class="btn btn-danger" (click)="deleteContactRecord()" >{{'discard.record'|translate}}</button>
+      <button *ngIf="isExternalNewContact()" class="btn btn-primary" (click)="saveContactRecord()" >a {{'save.contact'|translate}}</button>&nbsp;
+      <button *ngIf="isInternalActiveContact()" class="btn btn-default" (click)="activeContactRecord()" >b {{'set.active.status'|translate}}</button>&nbsp;
+      <button *ngIf="isExternalNotNewContact()" class="btn btn-default" (click)="setStatusToRevise()" [disabled]="showErrorSummary()" >c {{'set.revise.status'|translate}}</button>
+      <button *ngIf="isInternalDeleteContact()" class="btn btn-danger" (click)="deleteContactRecord()" >d {{'remove.contact'|translate}}</button>&nbsp;
+      <button *ngIf="isExternalNotNewContact()" class="btn btn-default" (click)="setStatusToRemove()" [disabled]="showErrorSummary()" >e {{'set.remove.status'|translate}}</button>
+      <button *ngIf="isExternalNewContact()" class="btn btn-danger" (click)="deleteContactRecord()" >f {{'discard.record'|translate}}</button>
       <span   *ngIf="!isInternal">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-      <button class="btn btn-default" (click)="revertContactRecord()" >{{'discard.changes'|translate}}</button>
+      <button class="btn btn-default" (click)="revertContactRecord()" >g {{'discard.changes'|translate}}</button>
     </div>
   </div>
   <!--<div class="row" *ngIf="contactRecordModel.dirty">-->

@@ -14,13 +14,7 @@ export const AMEND_REASON_ADDR_CHANGE = 'ADDR_CHANGE';
 export const AMEND_REASON_FACILITY_CHANGE = 'FACILITY_CHANGE'; 
 export const AMEND_REASON_OTHER = 'OTHER'; 
 
-// this needs to match the code values in contactStatuses.json
-export const CONT_STATUS_NEW = 'NEW';
-export const CONT_STATUS_REVISE = 'REVISE';
-export const CONT_STATUS_REMOVE = 'REMOVE'
-export const CONT_STATUS_ACTIVE = 'ACTIVE';
-
-// todo only keep one of the contact status list
+// these need to match the code values in the contactStatuses.json file
 export const ContactStatus = {
   NEW,
   REVISE,
