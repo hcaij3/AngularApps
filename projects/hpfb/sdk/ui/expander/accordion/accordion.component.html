@@ -1,6 +1,5 @@
-<ng-container *ngFor="let recordRow of ttformArray.controls; let i=index;">
+<ng-container *ngFor="let recordRow of rowsFormArray.controls; let i=index;">
 
-  ** recordRow.get('expandFlag').value = {{recordRow.get('expandFlag').value}} 
   <h4 id="expand-row-{{i}}" class="clickableRow" role="button" [ngClass]="{'selected': recordRow.get('expandFlag').value}"
     (click)="toggleExpand(i, recordRow.get('expandFlag').value)">
     <span [ngClass]="{'fa-caret-right':!recordRow.get('expandFlag').value, 'fa-caret-down': recordRow.get('expandFlag').value }"></span>

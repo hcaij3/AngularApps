@@ -53,6 +53,12 @@ export class ContactListService extends RecordListBaseService implements RecordL
     return this._recordService.getEmptyModel();
   }
 
+  public getReactiveModel(fb: FormBuilder): FormGroup {
+    return fb.group({
+      contacts: fb.array([])
+    });
+  }
+
   // getContactFormRecord(fb: FormBuilder, isInternal) {
   //
   //   return this._recordService.getReactiveModel(fb, isInternal);
