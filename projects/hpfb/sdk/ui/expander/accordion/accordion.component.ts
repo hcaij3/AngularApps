@@ -10,64 +10,18 @@ import { FINAL } from '../../common.constants';
 })
 export class AccordionComponent {
 
-    @Input() ttformArray: FormArray;
-    @Input() changedTrigger: number;
-    @Input() accordionHeadingMsgKey: string;
-    // @Input() ttTempIndex: number;
+  @Input() ttformArray: FormArray;
+  @Input() accordionHeadingMsgKey: string;
+  // https://stackoverflow.com/questions/41510470/pass-scope-data-into-ng-content-in-angular2
+  @ContentChild('tmpl') tmplRef: TemplateRef<any>;
 
-    tata: FormArray;
-
-    // https://stackoverflow.com/questions/41510470/pass-scope-data-into-ng-content-in-angular2
-    @ContentChild('tmpl') tmplRef: TemplateRef<any>;
-
-    expandedRowIndex: number | null = null;
-    isToggling: boolean[] = [];
-
-    toggleRow(event: Event, index: number, expanded: boolean): void {
-      const currentState: boolean = !expanded;
-      if (currentState)
-        this.expandedRowIndex = index;
-      else 
-        this.expandedRowIndex = null;
-      // Prevent the click event from propagating to the parent li element
-      event.stopPropagation();
-      this.expandedRow.emit(this.expandedRowIndex);
-
-    }
-
-    handleToggle(event: Event, index: number): void {
-
-      if (!this.isToggling[index]) {
-        this.isToggling[index] = true;
-  
-        // Delay the toggle logic to give Angular time to update the UI
-        setTimeout(() => {
-          // Collapse the currently expanded row if any
-        if (this.expandedRowIndex !== null && this.expandedRowIndex !== index) {
-          this.expandedRowIndex = null;
-        }
-    
-        // Toggle the clicked row
-        this.expandedRowIndex = this.expandedRowIndex === index ? null : index;
-
-        console.log("&&", this.expandedRowIndex);
-
-          console.log(`Toggle event executed for record ${index + 1}`);
-  
-          // Reset the flag once the toggle logic is complete
-          this.isToggling[index] = false;
-  
-          // Trigger change detection to ensure UI updates
-          this.cdr.detectChanges();
-        });
-      }
-    }
-
-      @Output() recordClicked: EventEmitter<any> = new EventEmitter();
+  @Output() rowClicked: EventEmitter<any> = new EventEmitter();
 
   toggleExpand(index:number,  expanded: boolean) {
-    this.recordClicked.emit({ index: index, state: expanded }) 
+    this.rowClicked.emit({ index: index, state: expanded }) 
   }
+
+
     
   /**
    * Disable expand
@@ -144,27 +98,9 @@ export class AccordionComponent {
    * @param {SimpleChanges} changes
    */
   ngOnChanges(changes: SimpleChanges) {
-
-    if (changes['ttformArray']) {
-      const tt: FormArray = changes['ttformArray'].currentValue as FormArray
-
-      this.isToggling = new Array(tt.controls.length).fill(false);
-
-    //   tt.controls.forEach( (element: FormGroup, index: number) => {
-    //     if (element.controls['expandFlag'].value===true) {
-    //       this.expandedRowIndex = index
-    //     }
-    //   });
+    if (changes['columnDefinitions']) {
+      this.numberColSpan = (changes['columnDefinitions'].currentValue).length + 1;
     }
-
-
-    if (changes['changedTrigger']) {
-      this.ttformArray.controls.forEach( e => console.log(e.value))
-
-      this.tata  = this.ttformArray;
-    }
-
-
     if (changes['expandOnAdd']) {
       this._expandAdd = changes['expandOnAdd'].currentValue;
     }
@@ -172,9 +108,6 @@ export class AccordionComponent {
     if (changes['itemsList']) {
       this.updateDataRows(changes['itemsList'].currentValue);
       this.dataItems = changes['itemsList'].currentValue;
-
-      this.isToggling = new Array(this.dataItems.length).fill(false);
-
       if (!Array.isArray(this.dataItems)) {
         this.dataItems = [];
       } else if (this.dataItems.length > 0 && this.loadFileIndicator) {

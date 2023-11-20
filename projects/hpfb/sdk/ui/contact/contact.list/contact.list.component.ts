@@ -176,7 +176,6 @@ export class ContactListComponent extends RecordListBaseComponent implements OnI
     const firstControl = (this.contactListForm.controls['contacts'] as FormArray).at(0) as FormGroup;
     firstControl.controls['expandFlag'].setValue(true);
 
-    this.currentExpandIndex = 0;
   }
 
   public isValid(override: boolean = false): boolean {
@@ -265,7 +264,19 @@ export class ContactListComponent extends RecordListBaseComponent implements OnI
    */
   public saveContactRecord(record: FormGroup) {
     this.saveRecord(record, this._listService, this.lang, this.languageList, this.contactStatusList);
-    this.dataModel = this._listService.getModelRecordList();
+    // this.dataModel = this._listService.getModelRecordList();
+
+    console.log(record.controls['id'].value);
+
+    this.contactFormList.controls.forEach( (element: FormGroup, id: number) => {
+      if (element.controls['id'].value===id ) {
+        element.controls['expandFlag'].setValue(false); 
+      }
+    });  
+
+    this.contactFormList.controls.forEach( e => console.log(e.value))
+
+
     this.addRecordMsg++;
     this.showErrors = true;
     if (!this.isInternal) {
@@ -409,19 +420,6 @@ export class ContactListComponent extends RecordListBaseComponent implements OnI
     return true;
   }
 
-  currentExpandIndex:number;
-
-  lingGetExpandedRowIndex(e:any) {
-    console.log ("===========", e);
-    this.currentExpandIndex = e;
-
-    this.contactFormList.controls.forEach( (element: FormGroup, index: number) => {
-      // console.log(element);
-      element.controls['expandFlag'].setValue(index===this.currentExpandIndex)
-    });   
-  }
-
-  expandedRecord: any; // Keep track of the currently expanded record
 
   statechanged: number = 0
 
