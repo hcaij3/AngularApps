@@ -73,7 +73,7 @@ export class ContactListService extends RecordListBaseService implements RecordL
     }
   }
 
-  public contactDataToForm(contactModel, record: FormGroup) {
+  private contactDataToForm(contactModel, record: FormGroup) {
     this._recordService.mapDataModelFormModel(contactModel, record);
     return (record);
   }

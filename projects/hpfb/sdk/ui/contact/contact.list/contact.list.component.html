@@ -2,15 +2,16 @@
   <!--<error-summary *ngIf="showErrorsSummary()" [hiddenSummary]="showErrorsSummary()"-->
   <!--[errorList]="errorList" headingPreamble="heading.contactInfo"-->
   <!--[headingLevel]="headingLevel" label="Company Representative Record(s)" compId="contactList"></error-summary>-->
-
-  <lib-accordion [ttformArray]="contactFormList" [newRecord]="newRecordIndicator"
+  <!-- [changedTrigger]="statechanged" -->
+  <lib-accordion [ttformArray]="contactFormList" [changedTrigger]="statechanged" (expandedRow)="lingGetExpandedRowIndex($event)" 
+  (recordClicked)="handleRecordClick($event)" 
     [accordionHeadingMsgKey]="'heading.contactDetails'" [group]="dataModel"
     [disableExpand]="!isInternal && newRecordIndicator" [isValid]="validRec" [addRecord]="addRecordMsg"
     [loadFileIndicator]="loadFileIndicator" [deleteRecord]="deleteRecordMsg" [xmlStatus]="xmlStatus">
 
-    <ng-template #tmpl let-contactRow>
-      ==={{contactRow.get('id').value}}===
-      ==={{contactRow.get('contactDetails').values}}===
+    <ng-template #tmpl let-contactRow let-idx="i">
+      <!-- ==={{contactRow.get('id').value}}=== -->
+      === index = {{idx}} ,  ===
 
       <company-contact-record [cRRow]="contactRow" [detailsChanged]="updateContactDetails" [isInternal]="isInternal"
         [languageList]="languageList" [contactStatusList]="contactStatusList" [showErrors]="showErrors" [lang]="lang"

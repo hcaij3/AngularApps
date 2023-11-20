@@ -1,8 +1,19 @@
-<ul class="list-unstyled">
-  <li *ngFor="let contactRow of ttformArray.controls; let i=index">
-    <details [attr.open]="newRecord? '' : null">
-      <summary>{{accordionHeadingMsgKey | translate}}&nbsp; {{contactRow.get('id').value}}</summary>
-      <ng-container *ngTemplateOutlet="tmplRef; context: {$implicit: contactRow}">
+<details [class.disabled-details]="'true'">
+  <summary>This is a disabled summary</summary>
+  <p>Some content here</p>
+</details>
+
+<ul class="list-unstyled">    
+  <li *ngFor="let contactRow of tata.controls; let i=index" >
+    contactRow.get('expandFlag').value = {{contactRow.get('expandFlag').value}} 
+    <!-- <details [attr.open]="newRecord? '' : null"> newRecord || expandedRowIndex===i? '' : null -->
+    <!-- <details [attr.open]="contactRow.get('expandFlag').value? '' : null" > --> 
+      <!-- (toggle)="handleToggle($event, i)" -->
+      <details [attr.open]="contactRow.get('expandFlag').value? '' : null"  >
+      <summary (click)="toggleExpand(i, contactRow.get('expandFlag').value)" >  <!--  (click)="toggleRow($event, i, contactRow.get('expandFlag').value)" -->
+        {{accordionHeadingMsgKey | translate}}&nbsp; {{contactRow.get('id').value}}
+      </summary>
+      <ng-container *ngTemplateOutlet="tmplRef; context: {$implicit: contactRow, i: i}"> 
     </ng-container>
     </details>
   </li>
